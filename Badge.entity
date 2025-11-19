@@ -1,0 +1,74 @@
+{
+  "name": "Badge",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Badge name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Badge description"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Badge icon identifier"
+    },
+    "color": {
+      "type": "string",
+      "description": "Badge color theme",
+      "enum": [
+        "gold",
+        "silver",
+        "bronze",
+        "blue",
+        "green",
+        "purple"
+      ]
+    },
+    "criteria": {
+      "type": "object",
+      "description": "Criteria for earning the badge",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "modules_completed",
+            "quiz_score",
+            "streak",
+            "points",
+            "time_based"
+          ]
+        },
+        "value": {
+          "type": "number"
+        },
+        "specific_module": {
+          "type": "string"
+        }
+      }
+    },
+    "rarity": {
+      "type": "string",
+      "enum": [
+        "common",
+        "rare",
+        "epic",
+        "legendary"
+      ],
+      "default": "common"
+    }
+  },
+  "required": [
+    "name",
+    "description",
+    "icon",
+    "color",
+    "criteria"
+  ],
+  "rls": {
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

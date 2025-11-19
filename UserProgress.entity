@@ -1,0 +1,63 @@
+{
+  "name": "UserProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "total_points": {
+      "type": "number",
+      "default": 0
+    },
+    "level": {
+      "type": "number",
+      "default": 1
+    },
+    "current_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "longest_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "last_activity": {
+      "type": "string",
+      "format": "date"
+    },
+    "completed_moduloz": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of completed modulo IDs"
+    },
+    "earned_badges": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quiz_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "modulo_id": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}
