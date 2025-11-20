@@ -2,3 +2,206 @@
 - has engaged gamified learning content
 - blogs seciton for users to share their experience
 - Work is right on !!😁✌️
+
+📘 LAPDOS — Learning and Awareness Platform for Doping in Sports
+
+A Gamified Learning + AI-Assisted Anti-Doping Awareness Platform
+
+📌 Overview
+
+LAPDOS is a full-stack web platform designed to promote anti-doping awareness among athletes, students, coaches, and fitness enthusiasts.
+The system integrates:
+
+🧪 Drug/Chemical Image Analysis using AI
+
+📚 Moduloz (Learning modules + quizzes)
+
+📰 Blogs/Infographics with AI-powered authenticity checks
+
+🤖 AI Chatbot for scenario-based anti-doping questions
+
+The platform combines React.js, Node.js, Supabase, and a lightweight LLM (Mistral-Instruct / custom fine-tuned model) to deliver an interactive and educational experience.
+
+🚀 Key Features
+🧪 1. Drug / Chemical Image Detection
+
+Users upload an image of a drug/supplement.
+
+AI model analyzes the image and detects presence of doping agents.
+
+Returns:
+
+⚠️ Warning message (if contains doping substance)
+
+✅ Safe message (if clean)
+
+Stores analysis history for each user.
+
+📚 2. Moduloz — Learning + Quiz System
+
+Structured learning modules:
+
+Anti-Doping Basics
+
+Anabolic Agents
+
+Peptide Hormones
+
+Narcotics
+
+Methods & Testing Procedures
+
+Each module includes:
+
+Informative content (text + images)
+
+Mini-quizzes to reinforce learning
+
+Quiz scores are stored for progress tracking.
+
+📰 3. Blogs & Infographics Section
+
+Users can submit:
+
+Articles
+
+Awareness posts
+
+Infographics
+
+AI Model acts as moderator:
+
+Checks content authenticity
+
+Flags exploitation/misinformation
+
+Approves verified posts
+
+Verified posts appear in community feed.
+
+🤖 4. AI Chatbot
+
+Handles scenario-based anti-doping queries
+
+Helps athletes understand:
+
+Drug-eligibility
+
+Supplements
+
+WADA rules
+
+Competition-day restrictions
+
+Provides short, accurate responses
+
+Chat history saved (optional via JSON file or DB)
+
+🧩 Tech Stack
+Frontend
+
+⚛️ React.js
+
+🎨 TailwindCSS
+
+📜 React Router
+
+Axios for API calls
+
+Backend
+
+🟩 Node.js
+
+🌐 Express.js
+
+Supabase API integration
+
+ChromaDB (optional for RAG)
+
+Databases
+
+🗃️ Supabase (PostgreSQL)
+
+User Auth
+
+Modules
+
+Quizzes
+
+Blog posts
+
+Scores
+
+Analysis history
+
+📦 JSON File (optional)
+
+Chat history for quick prototype
+
+AI / ML
+
+Mistral-Instruct (via API)
+
+LangChain JS
+
+Image classification helper model
+
+AI validations for content moderation
+
+Deployment
+
+Vercel (Frontend)
+
+Render / Fly.io (Backend)
+
+Supabase Cloud (Database)
+
+🏗️ System Architecture
+User → React App → Node.js API → Supabase DB
+                          ↓
+                     AI Model
+                          ↓
+                     Chat/Analysis
+
+
+Includes:
+
+Authentication
+
+CRUD for blogs
+
+Module & quiz management
+
+Image processing
+
+AI chat and verification
+
+📦 Folder Structure
+lapdos/
+│
+├── client/                     # React frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Analysis/
+│   │   │   ├── Moduloz/
+│   │   │   ├── Blog/
+│   │   │   └── Chatbot/
+│   │   ├── pages/
+│   │   ├── utils/
+│   │   └── App.js
+│   └── package.json
+│
+├── server/                     # Node backend
+│   ├── routes/
+│   │   ├── analysis.js
+│   │   ├── blog.js
+│   │   ├── quiz.js
+│   │   └── chat.js
+│   ├── controllers/
+│   ├── models/
+│   ├── data/
+│   │   └── chatHistory.json   # optional chat store
+│   ├── app.js
+│   └── server.js
+│
+└── README.md
