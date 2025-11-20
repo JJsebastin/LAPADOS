@@ -15,10 +15,9 @@ A Gamified Learning + AI-Assisted Anti-Doping Awareness Platform
 
 LAPDOS is a full-stack web platform designed to promote anti-doping awareness among athletes, students, coaches, and fitness enthusiasts.
 The system integrates:
-🧪 Drug/Chemical Image Analysis using AI
-📚 Moduloz (Learning modules + quizzes)
-📰 Blogs/Infographics with AI-powered authenticity checks
-🤖 AI Chatbot for scenario-based anti-doping questions
+- 📚 Moduloz (Learning modules + quizzes)
+- 📰 Blogs/Infographics with AI-powered authenticity checks
+- 🤖 AI Chatbot for scenario-based anti-doping questions and drug image analysis.
 
 The platform combines React.js, Node.js, Supabase, and a lightweight LLM (Mistral-Instruct / custom fine-tuned model) to deliver an interactive and educational experience.
 
@@ -31,17 +30,18 @@ a detailed answer whether to consume it OR not and also whether it should be pre
 
 Stores analysis history for each user.
 📚 2. Moduloz — Learning + Quiz System
-Structured learning modules:
-Anti-Doping Basics
-Anabolic Agents
-Peptide Hormones
-Narcotics
+Structured learning modules:- 
+- The WADA Prohibited List
+- Supplement Risks & Safety
+- Doping Side Effects & LONG-TERM Damage
+- ATHLETE BIOLOGICAL PASSPORT (ABP)
+- ANTI-DOPING Testing Process
 
 📰 3. Blogs & Infographics Section
 Users can submit:
-Articles
-Awareness posts
-Infographics
+- Articles
+- Awareness posts
+- Infographics
 
 -------------------------------------------------
 Methods & Testing Procedures
