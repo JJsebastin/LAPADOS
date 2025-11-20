@@ -92,32 +92,34 @@ AI chat and verification
 
 -------------------------------------------------
 
+
 📦 Folder Structure
+
 lapdos/
 │
-├── client/                     # React frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Analysis/
-│   │   │   ├── Moduloz/
-│   │   │   ├── Blog/
-│   │   │   └── Chatbot/
-│   │   ├── pages/
-│   │   ├── utils/
-│   │   └── App.js
-│   └── package.json
+├── client/ # React frontend
+│ ├── src/
+│ │ ├── components/
+│ │ │ ├── Analysis/
+│ │ │ ├── Moduloz/
+│ │ │ ├── Blog/
+│ │ │ └── Chatbot/
+│ │ ├── pages/
+│ │ ├── utils/
+│ │ └── App.js
+│ └── package.json
 │
-├── server/                     # Node backend
-│   ├── routes/
-│   │   ├── analysis.js
-│   │   ├── blog.js
-│   │   ├── quiz.js
-│   │   └── chat.js
-│   ├── controllers/
-│   ├── models/
-│   ├── data/
-│   │   └── chatHistory.json   # optional chat store
-│   ├── app.js
-│   └── server.js
+├── server/ # Node backend
+│ ├── routes/
+│ │ ├── analysis.js
+│ │ ├── blog.js
+│ │ ├── quiz.js
+│ │ └── chat.js
+│ ├── controllers/
+│ ├── models/
+│ ├── data/
+│ │ └── chatHistory.json # optional chat store
+│ ├── app.js
+│ └── server.js
 │
 └── README.md
