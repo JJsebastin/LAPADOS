@@ -28,7 +28,6 @@ AI model analyzes the image and detects presence of doping agents.
 Returns:
 a detailed answer whether to consume it OR not and also whether it should be prescribed before consumption
 
-Stores analysis history for each user.
 📚 2. Moduloz — Learning + Quiz System
 Structured learning modules:- 
 - The WADA Prohibited List
@@ -58,8 +57,6 @@ Frontend
 ⚛️ React.js
 🎨 TailwindCSS
 📜 React Router
-
-Axios for API calls
 
 Backend
 - Node.js
