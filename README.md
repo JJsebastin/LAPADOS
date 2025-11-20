@@ -37,6 +37,13 @@ Anabolic Agents
 Peptide Hormones
 Narcotics
 
+📰 3. Blogs & Infographics Section
+Users can submit:
+Articles
+Awareness posts
+Infographics
+
+-------------------------------------------------
 Methods & Testing Procedures
 
 Each module includes:
@@ -44,21 +51,7 @@ Informative content (text + images)
 Mini-quizzes to reinforce learning
 Quiz scores are stored for progress tracking.
 
-📰 3. Blogs & Infographics Section
-Users can submit:
-Articles
-Awareness posts
-Infographics
-
-AI Model acts as moderator:
-
-Checks content authenticity
-
-Flags exploitation/misinformation
-
-Approves verified posts
-
-Verified posts appear in community feed.
+-------------------------------------------------
 
 🧩 Tech Stack
 Frontend
