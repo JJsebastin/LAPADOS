@@ -1,0 +1,28 @@
+# Environment variables
+.env
+*.env
+
+# Node / Backend
+node_modules/
+npm-debug.log*
+yarn-error.log
+package-lock.json
+
+# Build folders
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# DB files
+*.sqlite
+*.db
