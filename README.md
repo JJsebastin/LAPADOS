@@ -1,4 +1,4 @@
-```
+
 
 - Learning and awareness platform for ANTI-DOPING in sports.
 - has engaged gamified learning content
@@ -87,6 +87,7 @@ AI chat and verification
 
 -------------------------------------------------
 
+```
 
 📦 Folder Structure
 
@@ -118,6 +119,5 @@ lapdos/
 │ └── server.js
 │
 └── README.md
-
 
 ```
