@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}LAPDOS — Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.radar-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+.streak-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+.streak-day {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--dark);
+    background-color: var(--surface-alt);
+    border: 1px solid var(--border);
+}
+.streak-day.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <!-- Main Left Column -->
+  <div class="dashboard-main">
+    
+    <!-- Welcome Card -->
+    <div class="welcome-card animate-fade-in">
+      <h1 class="welcome-title">
+        Hi, {{ user.username|default:"Athlete" }}!<br>
+        Here is your <span class="text-brand-green">analytics</span> dashboard.
+      </h1>
+      <p class="welcome-subtitle">Track your learning progress and stay compliant with anti-doping regulations.</p>
+    </div>
+
+    <!-- Streak Visualization -->
+    <div class="glass-card animate-fade-in stagger-1" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h3 style="margin: 0 0 1rem 0; color: var(--dark);">Your Learning Streak</h3>
+      <div class="streak-container">
+        {% for day in streak_days_list %}
+        <div class="streak-day {% if day.active %}active{% endif %}" title="{{ day.date }}">
+          {{ day.date|date:"D"|slice:":1" }}
+        </div>
+        {% endfor %}
+      </div>
+      <p style="margin: 1rem 0 0 0; font-size: 0.85rem; color: var(--text-muted);">
+        {% if user.is_authenticated %}
+        Keep taking quizzes to maintain your streak!
+        {% else %}
+        Log in to track your streak.
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Radar Chart -->
+    <div class="glass-card animate-fade-in stagger-2" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h3 style="margin: 0 0 1rem 0; color: var(--dark);">Module Mastery (Spider Chart)</h3>
+      <div class="radar-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar Column -->
+  <div class="dashboard-sidebar animate-fade-in stagger-3">
+    <!-- Stats Overview Widget -->
+    <div class="calendar-widget">
+      <div class="calendar-header">
+        <span style="color: var(--dark);">Platform Stats</span>
+      </div>
+      <div style="text-align: center; padding: 1rem 0; display: flex; flex-direction: column; gap: 1rem;">
+        {% for icon, value, label in stats %}
+        <div>
+          <span style="font-size: 2rem;">{{ icon }}</span>
+          <h4 style="margin: 0.25rem 0 0 0; color: var(--dark); font-weight: 700; font-size: 1.25rem;">{{ value }}</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">{{ label }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const data = {
+        labels: {{ radar_labels|safe }},
+        datasets: [{
+            label: 'Quiz Scores (%)',
+            data: {{ radar_data|safe }},
+            fill: true,
+            backgroundColor: 'rgba(200, 230, 62, 0.2)',
+            borderColor: 'rgba(200, 230, 62, 1)',
+            pointBackgroundColor: 'rgba(200, 230, 62, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(200, 230, 62, 1)'
+        }]
+    };
+
+    const config = {
+        type: 'radar',
+        data: data,
+        options: {
+            elements: {
+                line: { borderWidth: 3 }
+            },
+            scales: {
+                r: {
+                    angleLines: { display: false },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
+            }
+        },
+    };
+
+    new Chart(ctx, config);
+});
+</script>
+{% endblock %}

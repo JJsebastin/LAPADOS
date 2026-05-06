@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Out — LAPDOS{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card" style="text-align: center;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">👋</div>
+    <h1 class="auth-title">Sign Out</h1>
+    <p class="auth-subtitle">Are you sure you want to sign out of LAPDOS?</p>
+
+    <form method="POST" action="{% url 'account_logout' %}" class="auth-form" style="margin-top: 2rem;">
+      {% csrf_token %}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+      {% endif %}
+      
+      <button type="submit" class="btn-primary btn-submit" style="background-color: var(--red, #E63946); width: 100%; margin-bottom: 1rem; border: none;">Yes, Sign Out</button>
+      
+      <a href="/" class="btn-secondary" style="display: block; width: 100%; text-align: center; padding: 0.75rem; border-radius: 8px; box-sizing: border-box; text-decoration: none;">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

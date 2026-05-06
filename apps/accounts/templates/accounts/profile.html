@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}'s Profile — LAPDOS{% endblock %}
+{% block nav_profile %}active{% endblock %}
+{% block content %}
+
+<div class="profile-layout animate-fade-in">
+
+  <!-- ═══ Left / Main Column ═══ -->
+  <div class="profile-main">
+
+    <!-- Profile Header Card -->
+    <div class="profile-header-card">
+      <div class="profile-header-inner">
+        <div class="profile-avatar">
+          {% if profile.avatar %}
+          <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+          {% else %}
+          {{ user.username|first|upper }}
+          {% endif %}
+        </div>
+
+        <div class="profile-info">
+          <h1 class="profile-name">{{ user.username|title }}</h1>
+          <div class="profile-meta">
+            <span class="badge badge-blue">{{ profile.get_role_display }}</span>
+            {% if profile.bio %}<span style="color:var(--text-muted);font-size:0.8rem;">{{ profile.bio }}</span>{% endif %}
+          </div>
+          <div class="profile-meta">
+            <span class="profile-points">⚡ {{ profile.points }} pts</span>
+          </div>
+          <div class="profile-badges-row">
+            {% for badge in profile.badges %}
+            <span class="profile-badge-item">🏅 {{ badge }}</span>
+            {% endfor %}
+            {% if not profile.badges %}
+            <span class="profile-no-badges">No badges yet — complete a perfect quiz!</span>
+            {% endif %}
+          </div>
+          <div class="profile-details-list" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+            <div><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }} {% if not user.first_name and not user.last_name %}N/A{% endif %}</div>
+            <div><strong>Username:</strong> {{ user.username }}</div>
+            <div><strong>Email:</strong> {{ user.email|default:"N/A" }}</div>
+            <div><strong>Country:</strong> {{ profile.country|default:"N/A" }}</div>
+            <div><strong>Nationality:</strong> {{ profile.nationality|default:"N/A" }}</div>
+            <div>
+              <strong>Social Media:</strong> 
+              {% if profile.social_media_link %}
+              <a href="{{ profile.social_media_link }}" target="_blank" style="color: var(--primary);">Link</a>
+              {% else %}N/A{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <a href="{% url 'edit_profile' %}" class="btn-write">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+            Edit Profile Settings
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-Column Grid: Quizzes + Blogs -->
+    <div class="profile-grid">
+
+      <!-- Quiz Attempts -->
+      <div class="profile-section animate-fade-in stagger-1">
+        <div class="section-head">
+          <h2>Quiz Attempts</h2>
+          <div class="section-icon icon-quiz">🎯</div>
+        </div>
+
+        {% if attempts %}
+        <div>
+          {% for attempt in attempts %}
+          <div class="attempt-row">
+            <div class="attempt-icon {% if attempt.percentage >= 80 %}high{% elif attempt.percentage >= 50 %}mid{% else %}low{% endif %}">
+              {% if attempt.percentage >= 80 %}🏆{% elif attempt.percentage >= 50 %}📚{% else %}💪{% endif %}
+            </div>
+            <div class="attempt-body">
+              <div class="attempt-title">{{ attempt.module.title }}</div>
+              <div class="attempt-bar">
+                <div class="attempt-bar-fill {% if attempt.percentage >= 80 %}bar-green{% elif attempt.percentage >= 50 %}bar-blue{% else %}bar-red{% endif %}"
+                     style="width:{{ attempt.percentage }}%"></div>
+              </div>
+            </div>
+            <div class="attempt-score">
+              <div class="attempt-score-num {% if attempt.percentage >= 80 %}score-green{% elif attempt.percentage >= 50 %}score-blue{% else %}score-red{% endif %}">{{ attempt.score }}/{{ attempt.total }}</div>
+              <div class="attempt-date">{{ attempt.created_at|date:"M d" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">🎯</div>
+          <p>No quiz attempts yet.</p>
+          <a href="/">Start a module →</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- My Blogs -->
+      <div class="profile-section animate-fade-in stagger-2">
+        <div class="section-head">
+          <h2>My Blogs</h2>
+          <a href="/blogs/new/create/" class="btn-new-blog">+ New</a>
+        </div>
+
+        {% if blogs %}
+        <div>
+          {% for blog in blogs %}
+          <div class="blog-row">
+            <div>
+              <p class="blog-row-title">{{ blog.title }}</p>
+              <span class="blog-row-date">{{ blog.created_at|date:"M d, Y" }} · {{ blog.get_post_type_display }}</span>
+            </div>
+            <span class="blog-status {% if blog.is_approved %}status-live{% else %}status-review{% endif %}">
+              {% if blog.is_approved %}Live{% else %}Review{% endif %}
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">✍️</div>
+          <p>No blogs yet.</p>
+          <a href="/blogs/new/create/">Write your first blog →</a>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ Right Sidebar ═══ -->
+  <div class="profile-aside animate-fade-in stagger-3">
+
+    <!-- Statistics -->
+    <div class="stat-sidebar-card">
+      <h3>Your Statistics</h3>
+      <div class="stat-row">
+        <span class="stat-row-label">Total Points</span>
+        <span class="stat-row-value score-green">{{ profile.points }}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Quiz Attempts</span>
+        <span class="stat-row-value score-red">{{ attempts|length }}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-row-label">Blogs Written</span>
+        <span class="stat-row-value score-blue">{{ blogs|length }}</span>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="stat-sidebar-card">
+      <h3>Quick Links</h3>
+      <a href="/" class="quick-link">
+        <div class="quick-link-icon">📚</div>
+        <div class="quick-link-text">
+          <h4>Browse Modules</h4>
+          <p>Pick up where you left off</p>
+        </div>
+      </a>
+      <a href="/ai/" class="quick-link">
+        <div class="quick-link-icon">🤖</div>
+        <div class="quick-link-text">
+          <h4>AI Assistant</h4>
+          <p>Ask any doping question</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

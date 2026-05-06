@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Write a Blog — LAPDOS{% endblock %}
+{% block nav_blogs %}active{% endblock %}
+{% block content %}
+
+<div class="form-wrapper">
+  <div class="page-header animate-fade-in">
+    <div class="badge badge-blue mb-3">Community</div>
+    <h1 class="page-title">Write a <span class="text-brand-red">Blog</span></h1>
+    <p class="page-subtitle">Share your knowledge. Our AI will fact-check your content before it goes live.</p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="custom-form animate-fade-in stagger-1">
+    {% csrf_token %}
+
+    <!-- Title -->
+    <div class="form-group">
+      <label class="form-label">Blog Title</label>
+      <input type="text" name="title" id="id_title" required
+        placeholder="e.g. How EPO Changed Cycling Forever"
+        class="form-input"
+        value="{{ form.title.value|default:'' }}"/>
+      {% if form.title.errors %}<p class="form-error">{{ form.title.errors|join:", " }}</p>{% endif %}
+    </div>
+
+    <!-- Post Type -->
+    <div class="form-group">
+      <label class="form-label">Post Type</label>
+      <select name="post_type" id="id_post_type" class="form-input form-select">
+        <option value="article" {% if form.post_type.value == "article" %}selected{% endif %}>📝 Article</option>
+        <option value="infographic" {% if form.post_type.value == "infographic" %}selected{% endif %}>📊 Infographic</option>
+        <option value="awareness" {% if form.post_type.value == "awareness" %}selected{% endif %}>🏅 Awareness Post</option>
+      </select>
+    </div>
+
+    <!-- Content -->
+    <div class="form-group">
+      <label class="form-label">Content</label>
+      <textarea name="content" id="id_content" rows="10" required
+        placeholder="Write your anti-doping article here..."
+        class="form-input form-textarea">{{ form.content.value|default:'' }}</textarea>
+      {% if form.content.errors %}<p class="form-error">{{ form.content.errors|join:", " }}</p>{% endif %}
+      <p class="form-help">Tip: You can use basic HTML tags for formatting (&lt;b&gt;, &lt;ul&gt;, &lt;h2&gt;)</p>
+    </div>
+
+    <!-- Cover Image -->
+    <div class="form-group">
+      <label class="form-label">Cover Image (Optional)</label>
+      <div class="file-upload-zone">
+        <input type="file" name="cover_image" id="id_cover_image" accept="image/*" class="file-input-hidden"/>
+        <label for="id_cover_image" class="file-upload-label">
+          <div class="file-upload-icon">🖼️</div>
+          <p class="file-upload-text">Click to upload a cover image</p>
+          <p class="file-upload-help">JPG, PNG, WEBP — recommended 1200×630px</p>
+        </label>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="form-group">
+      <label class="form-label">Tags</label>
+      <input type="text" name="tags" id="id_tags"
+        placeholder="wada, supplements, testing, steroids"
+        class="form-input"
+        value="{{ form.tags.value|default:'' }}"/>
+      <p class="form-help">Separate tags with spaces</p>
+    </div>
+
+    <button type="submit" class="btn-primary btn-submit" style="background-color: #E07A5F; color: white; border: none; box-shadow: none;">
+      PUBLISH BLOG
+    </button>
+  </form>
+</div>
+
+<script>
+  // Show filename after selecting cover image
+  document.getElementById('id_cover_image').addEventListener('change', function(e) {
+    const label = this.parentElement.parentElement;
+    if (this.files.length > 0) {
+      label.querySelector('p.font-medium').textContent = '✅ ' + this.files[0].name;
+      label.querySelector('div').textContent = '🖼️';
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Blogs — LAPDOS{% endblock %}
+{% block nav_blogs %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Dark Peach buttons for this page */
+  .btn-primary {
+    background-color: #E07A5F !important;
+    color: white !important;
+  }
+  .btn-primary:hover {
+    background-color: #D06A4F !important;
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3) !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="page-header animate-fade-in" style="margin-bottom: 2rem;">
+  <div class="header-content">
+    <div class="badge badge-blue" style="margin-bottom: 1rem;">Community Voices</div>
+    <h1 class="page-title" style="margin-bottom: 0.5rem;">Anti-Doping Blogs</h1>
+    <p class="page-subtitle" style="margin-bottom: 1.5rem;">Real stories, science, and awareness from athletes and advocates.</p>
+  </div>
+  {% if user.is_authenticated %}
+  <div>
+    <a href="{% url 'create_blog' %}" class="btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">Write a Blog</a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Filter Tabs -->
+<div class="filter-section animate-fade-in stagger-1" id="filterSection">
+  <div class="filter-tabs">
+    {% for key, label in filter_choices %}
+    <button class="filter-btn {% if forloop.first %}active{% endif %}" data-filter="{{ key }}">{{ label }}</button>
+    {% endfor %}
+  </div>
+
+  <!-- Blog Cards -->
+  <div class="blogs-container animate-fade-in stagger-2">
+    {% if blogs %}
+    <div class="blog-grid">
+      {% for blog in blogs %}
+      <a href="{% url 'blog_detail' blog.slug %}"
+         class="blog-card"
+         data-type="{{ blog.post_type }}">
+        
+        <div class="blog-image-wrapper">
+          {% if blog.cover_image %}
+          <img src="{{ blog.cover_image.url }}" alt="{{ blog.title }}" class="blog-image"/>
+          {% else %}
+          <div class="blog-image-placeholder">
+            {% if blog.post_type == 'infographic' %}📊{% elif blog.post_type == 'awareness' %}🏅{% else %}📝{% endif %}
+          </div>
+          {% endif %}
+          
+          <div class="blog-badge-wrapper">
+            <span class="badge 
+              {% if blog.post_type == 'article' %}badge-blue
+              {% elif blog.post_type == 'infographic' %}badge-green
+              {% else %}badge-red{% endif %} badge-glass">
+              {{ blog.get_post_type_display }}
+            </span>
+          </div>
+        </div>
+
+        <div class="blog-content">
+          <div class="blog-meta">
+            <span>{{ blog.created_at|date:"M d, Y" }}</span>
+          </div>
+          <h3 class="blog-title">{{ blog.title }}</h3>
+          <p class="blog-excerpt">{{ blog.content|striptags }}</p>
+          
+          <div class="blog-footer">
+            <div class="author-info">
+              <div class="author-avatar">
+                {{ blog.author.username|first|upper }}
+              </div>
+              <span class="author-name">{{ blog.author.username }}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon-large">📭</div>
+      <h3 class="empty-title">No Blogs Yet</h3>
+      <p class="empty-text" style="margin-bottom: 1.5rem;">Be the first to share your anti-doping knowledge!</p>
+      {% if user.is_authenticated %}
+      <div>
+        <a href="{% url 'create_blog' %}" class="btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">Write the First Blog</a>
+      </div>
+      {% else %}
+      <div>
+        <a href="/accounts/login/" class="btn-secondary" style="padding: 0.8rem 2rem; font-size: 1rem;">Login to Write</a>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

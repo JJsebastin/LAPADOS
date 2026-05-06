@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}{{ module.title }} — LAPDOS{% endblock %}
+{% block nav_modules %}active{% endblock %}
+{% block content %}
+
+<div class="module-detail-wrap animate-fade-in">
+
+  <!-- Module Header -->
+  <div class="module-detail-header">
+    <a href="/" class="back-link">← Back to Modules</a>
+    <div class="module-detail-top">
+      <div class="module-detail-icon">{{ module.icon|default:"📚" }}</div>
+      <div>
+        <p class="module-order-label">MODULE {{ module.order }}</p>
+        <h1 class="module-detail-title">{{ module.title }}</h1>
+        <p class="module-detail-meta">{{ module.duration_mins }} min read</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section (shown by default, hidden when quiz starts) -->
+  <div id="contentSection">
+    <div class="module-content-card">
+      {{ module.content|safe }}
+    </div>
+
+    {% if quizzes %}
+    <button id="startQuizBtn" class="btn-primary btn-start-quiz" onclick="startQuiz()">
+      🎯 Take the Quiz ({{ quizzes|length }} question{{ quizzes|length|pluralize }})
+    </button>
+    {% else %}
+    <div class="empty-state" style="margin-top:1.5rem;">
+      <div class="empty-state-icon">📝</div>
+      <p>No quiz available for this module yet.</p>
+      <a href="/">← Browse all modules</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Quiz Section (hidden initially) -->
+  <div id="quizSection" style="display:none;">
+    <h2 class="quiz-heading">Quiz Time</h2>
+    <form id="quizForm">
+      {% csrf_token %}
+      {% for q in quizzes %}
+      <div class="quiz-card">
+        <p class="quiz-question">{{ forloop.counter }}. {{ q.question }}</p>
+        <div class="quiz-options">
+          <label class="quiz-option">
+            <input type="radio" name="q_{{ q.id }}" value="A" data-qid="{{ q.id }}" required />
+            <span><strong>A.</strong> {{ q.option_a }}</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="q_{{ q.id }}" value="B" data-qid="{{ q.id }}" />
+            <span><strong>B.</strong> {{ q.option_b }}</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="q_{{ q.id }}" value="C" data-qid="{{ q.id }}" />
+            <span><strong>C.</strong> {{ q.option_c }}</span>
+          </label>
+          <label class="quiz-option">
+            <input type="radio" name="q_{{ q.id }}" value="D" data-qid="{{ q.id }}" />
+            <span><strong>D.</strong> {{ q.option_d }}</span>
+          </label>
+        </div>
+      </div>
+      {% endfor %}
+      <button type="button" class="btn-primary btn-start-quiz" onclick="submitQuiz()">Submit Answers</button>
+    </form>
+  </div>
+
+  <!-- Results Section (hidden initially) -->
+  <div id="resultsSection" style="display:none;">
+    <div class="results-card">
+      <div id="scoreDisplay" class="results-score"></div>
+      <div id="percentDisplay" class="results-percent"></div>
+      <p id="resultMsg" class="results-msg"></p>
+    </div>
+    <div id="resultsList"></div>
+    <a href="/" class="btn-primary btn-start-quiz" style="display:block;text-align:center;margin-top:1rem;">← Back to Modules</a>
+  </div>
+
+</div>
+
+<script>
+const SUBMIT_URL = "{% url 'submit_quiz' module.slug %}";
+
+function startQuiz() {
+  document.getElementById('contentSection').style.display = 'none';
+  document.getElementById('quizSection').style.display = 'block';
+}
+
+async function submitQuiz() {
+  const form = document.getElementById('quizForm');
+  const radios = form.querySelectorAll('input[type=radio]:checked');
+  const answers = {};
+  radios.forEach(r => { answers[r.getAttribute('data-qid')] = r.value; });
+
+  const res = await fetch(SUBMIT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+    body: JSON.stringify({ answers })
+  });
+  const data = await res.json();
+
+  document.getElementById('quizSection').style.display = 'none';
+  document.getElementById('resultsSection').style.display = 'block';
+
+  document.getElementById('scoreDisplay').textContent = data.score + '/' + data.total;
+  document.getElementById('percentDisplay').textContent = data.percentage + '%';
+  document.getElementById('resultMsg').textContent =
+    data.percentage >= 80 ? '🏆 Excellent! You earned ' + (data.score * 10) + ' points!' : '📚 Keep studying — you can do it!';
+
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  data.results.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'result-item ' + (r.correct ? 'result-correct' : 'result-wrong');
+    div.innerHTML = `
+      <span class="result-icon">${r.correct ? '✅' : '❌'}</span>
+      <div>
+        <p class="result-text">Your answer: <strong>${r.your_answer}</strong> &nbsp;|&nbsp; Correct: <strong>${r.right_answer}</strong></p>
+        ${r.explanation ? '<p class="result-explain">' + r.explanation + '</p>' : ''}
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function getCookie(name) {
+  return document.cookie.split(';').find(c => c.trim().startsWith(name + '='))?.split('=')[1] || '';
+}
+</script>
+{% endblock %}

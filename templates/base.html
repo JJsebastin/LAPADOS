@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}LAPDOS — Anti-Doping Platform{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}LAPDOS: Learn, Quiz, and Discover the truth about anti-doping in sports. Powered by AI.{% endblock %}"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}">
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="layout-body">
+
+  <!-- Sidebar (Desktop & Mobile) -->
+  <aside id="sidebar" class="sidebar">
+    <!-- Brand -->
+    <div class="sidebar-header">
+      <a href="/" class="brand-link">
+        <span class="brand-full">LAP<span class="text-brand-green">DOS</span></span>
+        <span class="brand-short">L<span class="text-brand-green">D</span></span>
+      </a>
+    </div>
+
+    <!-- Profile Summary (Sidebar) -->
+    {% if user.is_authenticated %}
+    <div class="sidebar-profile">
+      <div class="sidebar-avatar">{{ user.username|first|upper }}</div>
+      <h3 class="sidebar-name">{{ user.username }}</h3>
+      <p class="sidebar-role">New York, USA</p>
+    </div>
+    {% endif %}
+    
+    <!-- Navigation Links -->
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link {% block nav_dashboard %}{% endblock %}">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a href="/blogs/" class="nav-link {% block nav_blogs %}{% endblock %}">
+        <span class="nav-icon">📝</span>
+        <span class="nav-text">Workspace</span>
+      </a>
+      <a href="/ai/" class="nav-link {% block nav_ai %}{% endblock %}">
+        <span class="nav-icon">🤖</span>
+        <span class="nav-text">Messages</span>
+      </a>
+      <a href="/modules/" class="nav-link {% block nav_moduloz %}{% endblock %}">
+        <span class="nav-icon">📚</span>
+        <span class="nav-text">Moduloz</span>
+      </a>
+      
+      <div class="sidebar-footer">
+        {% if user.is_authenticated %}
+        <a href="/accounts/profile/" class="nav-link profile-link {% block nav_profile %}{% endblock %}">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/accounts/logout/" class="nav-link logout-link">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Logout</span>
+        </a>
+        {% else %}
+        <div class="auth-buttons nav-text-only">
+          <a href="/accounts/login/" class="btn-secondary btn-block">Login</a>
+          <a href="/accounts/signup/" class="btn-primary btn-block">Sign Up</a>
+        </div>
+        <a href="/accounts/login/" class="nav-link auth-icon-only">
+          <span class="nav-icon">🔑</span>
+        </a>
+        {% endif %}
+        
+
+      </div>
+    </nav>
+    
+    <!-- Sidebar Toggle (Removed to match design) -->
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-wrapper">
+    
+    <!-- Top Header -->
+    <header class="top-header" style="justify-content: flex-end;">
+      <div class="header-actions">
+        <div class="theme-toggle">
+          <button class="theme-btn active">☀️ Light</button>
+          <button class="theme-btn">🌙 Dark</button>
+        </div>
+        <button class="icon-btn">🔔<span class="notification-badge"></span></button>
+        <a href="/ai/" class="btn-header-action" style="background: var(--primary); color: var(--dark);">Ask AI Assistant</a>
+      </div>
+    </header>
+
+    <!-- Scrollable Page Content -->
+    <div class="content-scrollable">
+      <div class="content-container">
+        {% if messages %}
+        <div class="messages-container">
+          {% for msg in messages %}
+          <div class="alert alert-{{ msg.tags }} animate-fade-in">
+            <span class="alert-icon">{% if msg.tags == 'error' %}⚠️{% elif msg.tags == 'warning' %}⏳{% else %}✅{% endif %}</span>
+            {{ msg }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </main>
+
+  <!-- Custom JS -->
+  <script src="{% static 'js/lapdos.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# ─── Core Django ───────────────────────────────────────────
+Django==5.0.4
+djangorestframework==3.15.1
+
+# ─── Auth ──────────────────────────────────────────────────
+django-allauth==0.63.3
+
+# ─── Environment Variables ─────────────────────────────────
+django-environ==0.11.2
+
+# ─── Image Handling ────────────────────────────────────────
+Pillow==10.3.0
+
+# ─── AI (Free - Google Gemini) ─────────────────────────────
+google-generativeai==0.7.2
+
+# ─── Database ──────────────────────────────────────────────
+psycopg2-binary==2.9.9       # Only needed if using PostgreSQL
+                              # Remove this if using SQLite (default)
+
+# ─── Static Files ──────────────────────────────────────────
+whitenoise==6.7.0
+
+# ─── Forms ─────────────────────────────────────────────────
+django-crispy-forms==2.1
+crispy-tailwind==1.0.3
+
+# ─── Rich Text Editor (Blogs) ──────────────────────────────
+django-ckeditor==6.7.1
+
+# ─── Slug Auto-generation ──────────────────────────────────
+python-slugify==8.0.4

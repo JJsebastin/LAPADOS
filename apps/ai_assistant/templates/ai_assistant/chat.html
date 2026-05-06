@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}AI Assistant — LAPDOS{% endblock %}
+{% block nav_ai %}active{% endblock %}
+{% block content %}
+<div class="ai-wrapper">
+  <div class="page-header animate-fade-in">
+    <div class="badge badge-green mb-3">Gemini Powered</div>
+    <h1 class="page-title">AI <span class="text-brand-green">Assistant</span></h1>
+    <p class="page-subtitle">Ask about doping rules, supplements, or upload a drug image for instant analysis.</p>
+  </div>
+
+  <div class="ai-tabs animate-fade-in stagger-1" id="aiTabs">
+    <button class="tab-btn active" data-tab="chat">💬 Chat</button>
+    <button class="tab-btn" data-tab="image">🔬 Analyze Drug Image</button>
+  </div>
+
+  <!-- Chat Tab -->
+  <div id="tabChat" class="tab-content animate-fade-in stagger-2 active">
+    <div class="chat-window" id="chatbox">
+      <div class="chat-welcome">Chat started. Ask me anything about WADA guidelines!</div>
+      
+      <!-- Messages injected here via JS -->
+
+      <div id="chatLoading" class="chat-loading" style="display:none;">
+        <div class="loading-dot"></div>
+        <div class="loading-dot delay-1"></div>
+        <div class="loading-dot delay-2"></div>
+      </div>
+    </div>
+    
+    <div class="chat-suggestions animate-fade-in stagger-3">
+      <button class="suggestion-btn">Is creatine banned by WADA?</button>
+      <button class="suggestion-btn">What is a TUE?</button>
+      <button class="suggestion-btn">Explain Athlete Biological Passport</button>
+      <button class="suggestion-btn">Side effects of EPO</button>
+    </div>
+    
+    <div class="chat-input-area animate-fade-in stagger-3">
+      <input type="text" id="chatInput" placeholder="Ask about doping, WADA rules, supplements..." class="form-input chat-input">
+      <button id="chatSend" class="btn-primary btn-chat">Send</button>
+    </div>
+  </div>
+
+  <!-- Image Tab -->
+  <div id="tabImage" class="tab-content animate-fade-in stagger-2" style="display:none;">
+    <div class="image-upload-zone" id="dropZone">
+      <input type="file" id="imgInput" accept="image/*" class="file-input-hidden"/>
+      <div class="upload-icon-large">💊</div>
+      <h3 class="upload-title">Upload Drug/Supplement Image</h3>
+      <p class="upload-text">Drag and drop here, or <span class="upload-link">browse files</span></p>
+      <p class="upload-help">JPG, PNG, WEBP supported</p>
+    </div>
+    
+    <div id="previewArea" class="preview-area" style="display:none;">
+      <div class="preview-image-container">
+        <img id="previewImg" class="preview-image"/>
+      </div>
+      <div class="preview-actions">
+        <button id="analyzeBtn" class="btn-primary btn-analyze">
+          <span id="analyzeText">🔍 Analyze for Doping Agents</span>
+        </button>
+        <div id="imageResult" class="analysis-result" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Chat URLs injected
+  window.AI_CHAT_URL = "{% url 'ai_chat' %}";
+  window.AI_ANALYZE_URL = "{% url 'ai_analyze' %}";
+</script>
+{% endblock %}

@@ -1,120 +1,61 @@
+# Lapdos
 
+Lapdos is an educational platform built with Django, featuring user accounts, learning modules, and a blogging system.
 
-- Learning and awareness platform for ANTI-DOPING in sports.
-- has engaged gamified learning content
-- blogs seciton for users to share their experience
-- Work is right on !!😁✌️
+## Features
 
--------------------------------------------------
+- **Module Management**: Organize and interact with learning modules and quizzes.
+- **Blogging System**: Create, edit, and read blog posts.
+- **User Accounts**: Profile management, authentication, and a personalized dashboard.
+- **Modern UI**: A sleek, responsive dashboard design.
 
-📘 LAPDOS — Learning and Awareness Platform for Doping in Sports
+## Tech Stack
 
-A Gamified Learning + AI-Assisted Anti-Doping Awareness Platform
+- **Backend**: Django (Python)
+- **Frontend**: HTML, CSS (Custom styling), JavaScript
+- **Database**: SQLite (Development)
 
-📌 Overview
+## Project Structure
 
-LAPDOS is a full-stack web platform designed to promote anti-doping awareness among athletes, students, coaches, and fitness enthusiasts.
-The system integrates:
-- 📚 Moduloz (Learning modules + quizzes)
-- 📰 Blogs/Infographics with AI-powered authenticity checks
-- 🤖 AI Chatbot for scenario-based anti-doping questions and drug image analysis.
+- `apps/accounts/` - User authentication and profile logic
+- `apps/moduloz/` - Learning module management
+- `apps/blogs/` - Blog posting and viewing
+- `config/` - Core Django project configuration
+- `templates/` - Global HTML templates
+- `static/` - Global static assets (CSS, JS, images)
 
-The platform combines React.js, Node.js, Supabase, and a lightweight LLM (Mistral-Instruct / custom fine-tuned model) to deliver an interactive and educational experience.
+## Setup Instructions
 
-🚀 Key Features
-🧪 1. AI assistant
-Users upload an image of a drug/supplement. OR asks scenario based quesitons..
-AI model analyzes the image and detects presence of doping agents. 
-Returns:
-a detailed answer whether to consume it OR not and also whether it should be prescribed before consumption
+1. **Clone the repository** (if applicable):
+   ```bash
+   git clone <repository-url>
+   cd Lapdos
+   ```
 
-📚 2. Moduloz — Learning + Quiz System
-Structured learning modules:- 
-- The WADA Prohibited List
-- Supplement Risks & Safety
-- Doping Side Effects & LONG-TERM Damage
-- ATHLETE BIOLOGICAL PASSPORT (ABP)
-- ANTI-DOPING Testing Process
+2. **Create and activate a virtual environment**:
+   ```bash
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
 
-📰 3. Blogs & Infographics Section
-Users can submit:
-- Articles
-- Awareness posts
-- Infographics
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
--------------------------------------------------
-Methods & Testing Procedures
+4. **Environment Configuration**:
+   Create a `.env` file in the root directory (alongside `manage.py`) to store your environment variables (e.g., secret keys, database credentials, API keys).
 
-Each module includes:
-Informative content (text + images)
-Mini-quizzes to reinforce learning
-Quiz scores are stored for progress tracking.
+5. **Run Database Migrations**:
+   ```bash
+   python manage.py migrate
+   ```
 
--------------------------------------------------
-
-🧩 Tech Stack
-Frontend
-⚛️ React.js
-🎨 TailwindCSS
-📜 React Router
-
-Backend
-- Node.js
-- Express.js
-- MongoDB
-
-User Auth
-Modules
-Quizzes
-Blog posts
-Scores
-Analysis history
-📦 JSON File (optional)
-
-
-Includes:
-
--------------------------------------------------
-
-Authentication
-CRUD for blogs
-Module & quiz management
-Image processing
-AI chat and verification
-
--------------------------------------------------
-
-```
-
-📦 Folder Structure
-
-lapdos/
-│
-├── client/ # React frontend
-│ ├── src/
-│ │ ├── components/
-│ │ │ ├── Analysis/
-│ │ │ ├── Moduloz/
-│ │ │ ├── Blog/
-│ │ │ └── Chatbot/
-│ │ ├── pages/
-│ │ ├── utils/
-│ │ └── App.js
-│ └── package.json
-│
-├── server/ # Node backend
-│ ├── routes/
-│ │ ├── analysis.js
-│ │ ├── blog.js
-│ │ ├── quiz.js
-│ │ └── chat.js
-│ ├── controllers/
-│ ├── models/
-│ ├── data/
-│ │ └── chatHistory.json # optional chat store
-│ ├── app.js
-│ └── server.js
-│
-└── README.md
-
-```
+6. **Start the Development Server**:
+   ```bash
+   python manage.py runserver
+   ```
+   Navigate to `http://127.0.0.1:8000/` in your browser.

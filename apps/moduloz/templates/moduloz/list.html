@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}LAPDOS — Moduloz{% endblock %}
+{% block nav_moduloz %}active{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  <div class="dashboard-main" style="width: 100%;">
+    <div class="page-header animate-fade-in" style="margin-bottom: 2rem;">
+      <h1 class="page-title">Learning <span class="text-brand-green">Modules</span></h1>
+      <p class="page-subtitle">Master the WADA code, supplements, and anti-doping principles.</p>
+    </div>
+
+    <!-- All Modules Grid -->
+    <div class="animate-fade-in stagger-2">
+      <div class="section-header">
+        <h2 class="section-title">All Modules <span class="count-badge">{{ modules|length }}</span></h2>
+      </div>
+      <div class="modules-grid">
+        {% for module in modules %}
+        <a href="{% url 'module_detail' module.slug %}" class="module-card">
+          <div class="module-header">
+            <div class="module-title-wrap">
+              <div class="module-category">MODULE {{ module.order }}</div>
+              <div class="module-title">{{ module.title }}</div>
+            </div>
+          </div>
+          <div class="module-footer">
+            <span class="module-status">{{ module.duration_mins }} min read</span>
+            <span class="btn-check">Start →</span>
+          </div>
+        </a>
+        {% empty %}
+        <div class="glass-card" style="padding: 2rem; text-align: center; grid-column: 1/-1;">
+          <p style="color: var(--text-muted); margin: 0;">No learning modules available yet. Check back soon!</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- All Quizzes Grid -->
+    <div class="animate-fade-in stagger-3" style="margin-top: 3rem;">
+      <div class="section-header">
+        <h2 class="section-title">All Quizzes <span class="count-badge">{{ quizzes|length }}</span></h2>
+      </div>
+      <div class="modules-grid">
+        {% for quiz in quizzes %}
+        <a href="{% url 'module_detail' quiz.module.slug %}#quizzes" class="module-card">
+          <div class="module-header">
+            <div class="module-title-wrap">
+              <div class="module-category">FROM {{ quiz.module.title|upper }}</div>
+              <div class="module-title" style="font-size: 1.1rem; line-height: 1.4;">{{ quiz.question|truncatechars:60 }}</div>
+            </div>
+          </div>
+          <div class="module-footer">
+            <span class="module-status">Quiz Question</span>
+            <span class="btn-check">Take Quiz →</span>
+          </div>
+        </a>
+        {% empty %}
+        <div class="glass-card" style="padding: 2rem; text-align: center; grid-column: 1/-1;">
+          <p style="color: var(--text-muted); margin: 0;">No quizzes available yet. Check back soon!</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
