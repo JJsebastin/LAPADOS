@@ -11,24 +11,49 @@
     <!-- Profile Header Card -->
     <div class="profile-header-card">
       <div class="profile-header-inner">
+
+        <!-- Avatar -->
         <div class="profile-avatar">
           {% if profile.avatar %}
-          <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+          <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
           {% else %}
           {{ user.username|first|upper }}
           {% endif %}
         </div>
 
+        <!-- Info -->
         <div class="profile-info">
-          <h1 class="profile-name">{{ user.username|title }}</h1>
-          <div class="profile-meta">
+          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.2rem;">
+            <h1 class="profile-name">
+              {% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username|title }}{% endif %}
+            </h1>
             <span class="badge badge-blue">{{ profile.get_role_display }}</span>
-            {% if profile.bio %}<span style="color:var(--text-muted);font-size:0.8rem;">{{ profile.bio }}</span>{% endif %}
           </div>
-          <div class="profile-meta">
+          <p style="color:var(--text-muted);font-size:0.82rem;margin:0 0 0.75rem;">@{{ user.username }}</p>
+
+          <!-- Info grid: email / region / joined / timezone -->
+          <div class="profile-info-grid">
+            <div class="profile-info-cell">
+              <span class="pinfo-label">EMAIL</span>
+              <span class="pinfo-value">{{ user.email|default:"N/A" }}</span>
+            </div>
+            <div class="profile-info-cell">
+              <span class="pinfo-label">COUNTRY</span>
+              <span class="pinfo-value">{{ profile.country|default:"N/A" }}</span>
+            </div>
+            <div class="profile-info-cell">
+              <span class="pinfo-label">JOINED</span>
+              <span class="pinfo-value">{{ user.date_joined|date:"F Y" }}</span>
+            </div>
+            <div class="profile-info-cell">
+              <span class="pinfo-label">NATIONALITY</span>
+              <span class="pinfo-value">{{ profile.nationality|default:"N/A" }}</span>
+            </div>
+          </div>
+
+          <!-- Points & Badges -->
+          <div class="profile-badges-row" style="margin-top:0.75rem;">
             <span class="profile-points">⚡ {{ profile.points }} pts</span>
-          </div>
-          <div class="profile-badges-row">
             {% for badge in profile.badges %}
             <span class="profile-badge-item">🏅 {{ badge }}</span>
             {% endfor %}
@@ -36,21 +61,9 @@
             <span class="profile-no-badges">No badges yet — complete a perfect quiz!</span>
             {% endif %}
           </div>
-          <div class="profile-details-list" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
-            <div><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }} {% if not user.first_name and not user.last_name %}N/A{% endif %}</div>
-            <div><strong>Username:</strong> {{ user.username }}</div>
-            <div><strong>Email:</strong> {{ user.email|default:"N/A" }}</div>
-            <div><strong>Country:</strong> {{ profile.country|default:"N/A" }}</div>
-            <div><strong>Nationality:</strong> {{ profile.nationality|default:"N/A" }}</div>
-            <div>
-              <strong>Social Media:</strong> 
-              {% if profile.social_media_link %}
-              <a href="{{ profile.social_media_link }}" target="_blank" style="color: var(--primary);">Link</a>
-              {% else %}N/A{% endif %}
-            </div>
-          </div>
         </div>
 
+        <!-- Edit button -->
         <div class="profile-actions">
           <a href="{% url 'edit_profile' %}" class="btn-write">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
@@ -67,7 +80,7 @@
       <div class="profile-section animate-fade-in stagger-1">
         <div class="section-head">
           <h2>Quiz Attempts</h2>
-          <div class="section-icon icon-quiz">🎯</div>
+          <a href="{% url 'module_list' %}" class="btn-new-blog">View All</a>
         </div>
 
         {% if attempts %}
@@ -85,7 +98,7 @@
               </div>
             </div>
             <div class="attempt-score">
-              <div class="attempt-score-num {% if attempt.percentage >= 80 %}score-green{% elif attempt.percentage >= 50 %}score-blue{% else %}score-red{% endif %}">{{ attempt.score }}/{{ attempt.total }}</div>
+              <div class="attempt-score-num {% if attempt.percentage >= 80 %}score-green{% elif attempt.percentage >= 50 %}score-blue{% else %}score-red{% endif %}">{{ attempt.percentage }}%</div>
               <div class="attempt-date">{{ attempt.created_at|date:"M d" }}</div>
             </div>
           </div>
@@ -95,7 +108,7 @@
         <div class="empty-state">
           <div class="empty-state-icon">🎯</div>
           <p>No quiz attempts yet.</p>
-          <a href="/">Start a module →</a>
+          <a href="{% url 'module_list' %}">Start a module →</a>
         </div>
         {% endif %}
       </div>
@@ -136,43 +149,113 @@
   <!-- ═══ Right Sidebar ═══ -->
   <div class="profile-aside animate-fade-in stagger-3">
 
-    <!-- Statistics -->
+    <!-- Statistics (dark tile grid) -->
     <div class="stat-sidebar-card">
       <h3>Your Statistics</h3>
-      <div class="stat-row">
-        <span class="stat-row-label">Total Points</span>
-        <span class="stat-row-value score-green">{{ profile.points }}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-row-label">Quiz Attempts</span>
-        <span class="stat-row-value score-red">{{ attempts|length }}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-row-label">Blogs Written</span>
-        <span class="stat-row-value score-blue">{{ blogs|length }}</span>
+      <div class="stat-grid-2">
+        <div class="stat-tile">
+          <div class="stat-tile-icon">⚡</div>
+          <div class="stat-tile-num">{{ profile.points }}</div>
+          <div class="stat-tile-label">Total Points</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-icon">🏆</div>
+          <div class="stat-tile-num">{{ attempts|length }}</div>
+          <div class="stat-tile-label">Quiz Attempts</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-icon">📝</div>
+          <div class="stat-tile-num">{{ blogs|length }}</div>
+          <div class="stat-tile-label">Blogs Written</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-icon">🎯</div>
+          <div class="stat-tile-num">
+            {% if attempts %}
+              {% with total=0 %}
+                {{ attempts|length }}
+              {% endwith %}
+            {% else %}0{% endif %}
+          </div>
+          <div class="stat-tile-label">Contributions</div>
+        </div>
       </div>
     </div>
 
-    <!-- Quick Links -->
-    <div class="stat-sidebar-card">
-      <h3>Quick Links</h3>
+    <!-- Quick Actions -->
+    <div class="quick-actions-card">
+      <h3>Quick Actions</h3>
       <a href="/" class="quick-link">
         <div class="quick-link-icon">📚</div>
         <div class="quick-link-text">
           <h4>Browse Modules</h4>
           <p>Pick up where you left off</p>
         </div>
+        <span class="quick-link-arrow">›</span>
       </a>
       <a href="/ai/" class="quick-link">
         <div class="quick-link-icon">🤖</div>
         <div class="quick-link-text">
-          <h4>AI Assistant</h4>
-          <p>Ask any doping question</p>
+          <h4>Ask AI Assistant</h4>
+          <p>Any doping question answered</p>
         </div>
+        <span class="quick-link-arrow">›</span>
       </a>
+      <a href="/blogs/" class="quick-link">
+        <div class="quick-link-icon">📰</div>
+        <div class="quick-link-text">
+          <h4>Read Blog Posts</h4>
+          <p>Community insights & articles</p>
+        </div>
+        <span class="quick-link-arrow">›</span>
+      </a>
+    </div>
+
+    <!-- Required Action -->
+    <div class="required-action-card">
+      <div class="req-icon">🔔</div>
+      <h4>Complete Your Profile</h4>
+      <p>Add your country, nationality, and a profile picture to strengthen your presence on the platform.</p>
+      <a href="{% url 'edit_profile' %}">Update Settings →</a>
     </div>
 
   </div>
 
 </div>
+
+<style>
+/* Profile info grid */
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.profile-info-cell {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.pinfo-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.pinfo-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Attempt percentage display */
+.attempt-score-num { font-size: 0.9rem; }
+</style>
+
 {% endblock %}

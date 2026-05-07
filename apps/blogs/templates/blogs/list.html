@@ -1,46 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Blogs — LAPDOS{% endblock %}
+{% block title %}Anti-Doping Blogs — LAPDOS{% endblock %}
 {% block nav_blogs %}active{% endblock %}
-
-{% block extra_head %}
-<style>
-  /* Dark Peach buttons for this page */
-  .btn-primary {
-    background-color: #E07A5F !important;
-    color: white !important;
-  }
-  .btn-primary:hover {
-    background-color: #D06A4F !important;
-    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3) !important;
-  }
-</style>
-{% endblock %}
 
 {% block content %}
 
 <!-- Header -->
-<div class="page-header animate-fade-in" style="margin-bottom: 2rem;">
-  <div class="header-content">
-    <div class="badge badge-blue" style="margin-bottom: 1rem;">Community Voices</div>
-    <h1 class="page-title" style="margin-bottom: 0.5rem;">Anti-Doping Blogs</h1>
-    <p class="page-subtitle" style="margin-bottom: 1.5rem;">Real stories, science, and awareness from athletes and advocates.</p>
+<div class="page-header animate-fade-in" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;">
+  <div>
+    <div class="badge badge-blue" style="margin-bottom:0.75rem;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;">Resource Library</div>
+    <h1 class="page-title" style="margin-bottom:0.4rem;">Anti-Doping Blogs</h1>
+    <p class="page-subtitle" style="max-width:42rem;">Editorial insights, policy updates, and awareness campaigns designed to foster a culture of clean sport.</p>
   </div>
   {% if user.is_authenticated %}
-  <div>
-    <a href="{% url 'create_blog' %}" class="btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">Write a Blog</a>
-  </div>
+  <a href="{% url 'create_blog' %}" class="btn-primary" style="padding:0.8rem 1.75rem;font-size:0.9rem;white-space:nowrap;display:inline-flex;align-items:center;gap:0.5rem;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    Write a Blog
+  </a>
   {% endif %}
 </div>
 
 <!-- Filter Tabs -->
 <div class="filter-section animate-fade-in stagger-1" id="filterSection">
-  <div class="filter-tabs">
+  <div class="filter-tabs" style="margin-bottom:2rem;">
     {% for key, label in filter_choices %}
     <button class="filter-btn {% if forloop.first %}active{% endif %}" data-filter="{{ key }}">{{ label }}</button>
     {% endfor %}
   </div>
 
-  <!-- Blog Cards -->
+  <!-- Blog Grid -->
   <div class="blogs-container animate-fade-in stagger-2">
     {% if blogs %}
     <div class="blog-grid">
@@ -48,38 +35,46 @@
       <a href="{% url 'blog_detail' blog.slug %}"
          class="blog-card"
          data-type="{{ blog.post_type }}">
-        
+
         <div class="blog-image-wrapper">
           {% if blog.cover_image %}
           <img src="{{ blog.cover_image.url }}" alt="{{ blog.title }}" class="blog-image"/>
           {% else %}
-          <div class="blog-image-placeholder">
+          <div class="blog-image-placeholder" style="background:linear-gradient(135deg,#f0f2f0 0%,#e5e8e4 100%);">
             {% if blog.post_type == 'infographic' %}📊{% elif blog.post_type == 'awareness' %}🏅{% else %}📝{% endif %}
           </div>
           {% endif %}
-          
+
+          <!-- Status badge -->
           <div class="blog-badge-wrapper">
-            <span class="badge 
+            <span class="blog-status-pill
+              {% if blog.is_approved %}pill-live{% else %}pill-draft{% endif %}">
+              {% if blog.is_approved %}Live{% else %}Draft{% endif %}
+            </span>
+          </div>
+
+          <!-- Type badge top-right -->
+          <div style="position:absolute;top:1rem;right:1rem;">
+            <span class="badge
               {% if blog.post_type == 'article' %}badge-blue
               {% elif blog.post_type == 'infographic' %}badge-green
-              {% else %}badge-red{% endif %} badge-glass">
+              {% else %}badge-glass{% endif %}" style="font-size:0.68rem;">
               {{ blog.get_post_type_display }}
             </span>
           </div>
         </div>
 
         <div class="blog-content">
-          <div class="blog-meta">
-            <span>{{ blog.created_at|date:"M d, Y" }}</span>
+          <div class="blog-meta" style="display:flex;align-items:center;gap:0.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            {{ blog.created_at|date:"M d, Y" }}
           </div>
           <h3 class="blog-title">{{ blog.title }}</h3>
           <p class="blog-excerpt">{{ blog.content|striptags }}</p>
-          
+
           <div class="blog-footer">
             <div class="author-info">
-              <div class="author-avatar">
-                {{ blog.author.username|first|upper }}
-              </div>
+              <div class="author-avatar">{{ blog.author.username|first|upper }}</div>
               <span class="author-name">{{ blog.author.username }}</span>
             </div>
           </div>
@@ -87,23 +82,66 @@
       </a>
       {% endfor %}
     </div>
+
+    <!-- Load More -->
+    <div style="text-align:center;margin-top:2.5rem;">
+      <button class="btn-load-more" id="loadMoreBtn">
+        Load More Articles
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    </div>
+
     {% else %}
     <div class="empty-state">
       <div class="empty-icon-large">📭</div>
       <h3 class="empty-title">No Blogs Yet</h3>
-      <p class="empty-text" style="margin-bottom: 1.5rem;">Be the first to share your anti-doping knowledge!</p>
+      <p class="empty-text" style="margin-bottom:1.5rem;">Be the first to share your anti-doping knowledge!</p>
       {% if user.is_authenticated %}
-      <div>
-        <a href="{% url 'create_blog' %}" class="btn-primary" style="padding: 0.8rem 2rem; font-size: 1rem;">Write the First Blog</a>
-      </div>
+      <a href="{% url 'create_blog' %}" class="btn-primary" style="padding:0.8rem 2rem;font-size:1rem;">Write the First Blog</a>
       {% else %}
-      <div>
-        <a href="/accounts/login/" class="btn-secondary" style="padding: 0.8rem 2rem; font-size: 1rem;">Login to Write</a>
-      </div>
+      <a href="/accounts/login/" class="btn-secondary" style="padding:0.8rem 2rem;font-size:1rem;">Login to Write</a>
       {% endif %}
     </div>
     {% endif %}
   </div>
 </div>
+
+<style>
+/* Live / Draft pill on image */
+.blog-status-pill {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+.pill-live { background: var(--primary); color: #3a5a00; }
+.pill-draft { background: rgba(230,126,34,0.15); color: var(--warning); border: 1px solid rgba(230,126,34,0.3); }
+
+/* Load More button */
+.btn-load-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 0.7rem 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+.btn-load-more:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+</style>
 
 {% endblock %}

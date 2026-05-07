@@ -109,7 +109,9 @@ async function submitQuiz() {
   document.getElementById('scoreDisplay').textContent = data.score + '/' + data.total;
   document.getElementById('percentDisplay').textContent = data.percentage + '%';
   document.getElementById('resultMsg').textContent =
-    data.percentage >= 80 ? '🏆 Excellent! You earned ' + (data.score * 10) + ' points!' : '📚 Keep studying — you can do it!';
+    data.percentage >= 80 ? '🏆 Excellent! You mastered this module and earned ' + (data.score * 10) + ' points!' :
+    data.percentage >= 50 ? '📚 Good effort! Review the material and try again.' :
+    '💪 Keep studying — you\'ve got this!';
 
   const list = document.getElementById('resultsList');
   list.innerHTML = '';

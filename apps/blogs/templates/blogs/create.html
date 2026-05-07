@@ -5,25 +5,23 @@
 
 <div class="form-wrapper">
   <div class="page-header animate-fade-in">
-    <div class="badge badge-blue mb-3">Community</div>
-    <h1 class="page-title">Write a <span class="text-brand-red">Blog</span></h1>
+    <div class="badge badge-blue" style="margin-bottom:0.75rem;">Community</div>
+    <h1 class="page-title">Write a <span class="text-brand-green">Blog</span></h1>
     <p class="page-subtitle">Share your knowledge. Our AI will fact-check your content before it goes live.</p>
   </div>
 
   <form method="post" enctype="multipart/form-data" class="custom-form animate-fade-in stagger-1">
     {% csrf_token %}
 
-    <!-- Title -->
     <div class="form-group">
       <label class="form-label">Blog Title</label>
       <input type="text" name="title" id="id_title" required
         placeholder="e.g. How EPO Changed Cycling Forever"
         class="form-input"
         value="{{ form.title.value|default:'' }}"/>
-      {% if form.title.errors %}<p class="form-error">{{ form.title.errors|join:", " }}</p>{% endif %}
+      {% if form.title.errors %}<p style="color:var(--red);font-size:0.8rem;margin-top:0.25rem;">{{ form.title.errors|join:", " }}</p>{% endif %}
     </div>
 
-    <!-- Post Type -->
     <div class="form-group">
       <label class="form-label">Post Type</label>
       <select name="post_type" id="id_post_type" class="form-input form-select">
@@ -33,54 +31,52 @@
       </select>
     </div>
 
-    <!-- Content -->
     <div class="form-group">
       <label class="form-label">Content</label>
       <textarea name="content" id="id_content" rows="10" required
         placeholder="Write your anti-doping article here..."
         class="form-input form-textarea">{{ form.content.value|default:'' }}</textarea>
-      {% if form.content.errors %}<p class="form-error">{{ form.content.errors|join:", " }}</p>{% endif %}
-      <p class="form-help">Tip: You can use basic HTML tags for formatting (&lt;b&gt;, &lt;ul&gt;, &lt;h2&gt;)</p>
+      {% if form.content.errors %}<p style="color:var(--red);font-size:0.8rem;margin-top:0.25rem;">{{ form.content.errors|join:", " }}</p>{% endif %}
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;">Tip: You can use basic HTML tags (&lt;b&gt;, &lt;ul&gt;, &lt;h2&gt;)</p>
     </div>
 
-    <!-- Cover Image -->
     <div class="form-group">
-      <label class="form-label">Cover Image (Optional)</label>
-      <div class="file-upload-zone">
+      <label class="form-label">Cover Image <span style="color:var(--text-muted);font-weight:400;">(Optional)</span></label>
+      <div class="file-upload-zone" id="uploadZone">
         <input type="file" name="cover_image" id="id_cover_image" accept="image/*" class="file-input-hidden"/>
         <label for="id_cover_image" class="file-upload-label">
-          <div class="file-upload-icon">🖼️</div>
-          <p class="file-upload-text">Click to upload a cover image</p>
-          <p class="file-upload-help">JPG, PNG, WEBP — recommended 1200×630px</p>
+          <div class="file-upload-icon" id="uploadIcon">🖼️</div>
+          <p class="file-upload-text" id="uploadText">Click to upload a cover image</p>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin:0.25rem 0 0;">JPG, PNG, WEBP — recommended 1200×630px</p>
         </label>
       </div>
     </div>
 
-    <!-- Tags -->
     <div class="form-group">
       <label class="form-label">Tags</label>
       <input type="text" name="tags" id="id_tags"
         placeholder="wada, supplements, testing, steroids"
         class="form-input"
         value="{{ form.tags.value|default:'' }}"/>
-      <p class="form-help">Separate tags with spaces</p>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;">Separate tags with spaces</p>
     </div>
 
-    <button type="submit" class="btn-primary btn-submit" style="background-color: #E07A5F; color: white; border: none; box-shadow: none;">
-      PUBLISH BLOG
-    </button>
+    <div style="display:flex;gap:1rem;">
+      <button type="submit" class="btn-primary btn-submit" style="flex:1;">
+        Publish Blog
+      </button>
+      <a href="{% url 'blog_list' %}" class="btn-secondary" style="padding:1rem 1.5rem;text-decoration:none;border-radius:var(--radius-md);display:flex;align-items:center;">
+        Cancel
+      </a>
+    </div>
   </form>
 </div>
 
 <script>
-  // Show filename after selecting cover image
-  document.getElementById('id_cover_image').addEventListener('change', function(e) {
-    const label = this.parentElement.parentElement;
+  document.getElementById('id_cover_image').addEventListener('change', function() {
     if (this.files.length > 0) {
-      label.querySelector('p.font-medium').textContent = '✅ ' + this.files[0].name;
-      label.querySelector('div').textContent = '🖼️';
+      document.getElementById('uploadText').textContent = '✅ ' + this.files[0].name;
     }
   });
 </script>
-
 {% endblock %}
