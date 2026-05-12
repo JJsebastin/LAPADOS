@@ -12,9 +12,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=2">
-
+  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=6">
+  
   {% block extra_head %}{% endblock %}
 </head>
 <body class="layout-body">
@@ -90,12 +89,7 @@
     <!-- Top Header -->
     <header class="top-header" style="justify-content: flex-end;">
       <div class="header-actions">
-        <div class="theme-toggle">
-          <button class="theme-btn active">☀️ Light</button>
-          <button class="theme-btn">🌙 Dark</button>
-        </div>
         <button class="icon-btn">🔔<span class="notification-badge"></span></button>
-        <a href="/ai/" class="btn-header-action" style="background: var(--primary); color: var(--dark);">Ask AI Assistant</a>
       </div>
     </header>
 
@@ -120,5 +114,14 @@
 
   <!-- Custom JS -->
   <script src="{% static 'js/lapdos.js' %}"></script>
+  <!-- 3D Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof VanillaTilt !== 'undefined') {
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
+      }
+    });
+  </script>
 </body>
 </html>

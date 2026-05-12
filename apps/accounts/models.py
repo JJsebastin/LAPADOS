@@ -18,6 +18,12 @@ class UserProfile(models.Model):
     nationality = models.CharField(max_length=100, blank=True)
     social_media_link = models.URLField(blank=True)
 
+    # Added fields for the new UI
+    timezone = models.CharField(max_length=100, blank=True, default="CET (UTC+1)")
+    day_streak = models.IntegerField(default=14)
+    certificates = models.IntegerField(default=8)
+    learning_time_hours = models.IntegerField(default=42)
+    contributions = models.IntegerField(default=128)
     def __str__(self):
         return f"{self.user.username} — {self.role}"
     

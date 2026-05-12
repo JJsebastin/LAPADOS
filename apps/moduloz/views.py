@@ -43,11 +43,11 @@ def dashboard(request):
     else:
         streak_days_list = [{"date": today - timedelta(days=i), "active": False} for i in range(6, -1, -1)]
 
+    # icon = static image filename in static/img/
     stats = [
-        ("📚", modules.count() or "5", "Modules"),
-        ("❓", "17+", "Quiz Questions"),
-        ("🤖", "AI", "Drug Checker"),
-        ("🔥", f"{streak_days} Days", "Streak"),
+        ("cubes.png", modules.count() or "5", "Modules"),
+        ("quiz.png", "17+", "Quiz Questions"),
+        ("torch.png", f"{streak_days} Days", "Streak"),
     ]
     return render(request, "moduloz/dashboard.html", {
         "modules": modules,

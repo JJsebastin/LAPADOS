@@ -1,10 +1,42 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}LAPDOS — Dashboard{% endblock %}
 {% block nav_dashboard %}active{% endblock %}
 
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Three.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
 <style>
+
+
+/* ── Contrasting section cards (Now Glassmorphic White/Silver/Greenish) ── */
+.section-card-dark {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(212, 239, 68, 0.15) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(212, 239, 68, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  transform-style: preserve-3d;
+}
+.section-card-dark h3 { color: var(--dark); font-size:1rem; font-weight:800; margin:0 0 1rem; transform: translateZ(30px); }
+.section-card-dark .streak-day {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0,0,0,0.05);
+  color: var(--text-muted);
+  transform: translateZ(20px);
+}
+.section-card-dark .streak-day.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--dark);
+}
+.section-card-dark p { color: var(--text-muted); margin:1rem 0 0; font-size:0.82rem; }
+
+/* Streak & stat tiles */
 .streak-container { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
 .streak-day {
   width:40px; height:40px; border-radius:10px;
@@ -24,24 +56,43 @@
 }
 .radar-container { width:100%; max-width:480px; margin:0 auto; }
 
+/* Module Mastery dark card (Now Glassmorphic White/Silver/Greenish) */
+.mastery-card-dark {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(212, 239, 68, 0.15) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  border: 1px solid rgba(212, 239, 68, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  transform-style: preserve-3d;
+}
+.mastery-card-dark h3 { color: var(--dark); font-size:1rem; font-weight:800; margin:0 0 1rem; transform: translateZ(30px); }
+.radar-container { transform: translateZ(20px); }
+
 /* Dashboard stats tiles */
 .dash-stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
 .dash-stat-tile {
-  background:var(--surface-alt);
+  background:var(--surface);
   border:1px solid var(--border);
   border-radius:var(--radius-md);
   padding:1.25rem;
   text-align:center;
   transition:all 0.2s ease;
+  transform-style: preserve-3d;
 }
 .dash-stat-tile:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
-.dash-stat-tile .tile-icon { font-size:1.75rem; margin-bottom:0.5rem; }
-.dash-stat-tile .tile-val { font-size:1.5rem; font-weight:800; color:var(--dark); }
-.dash-stat-tile .tile-lbl { font-size:0.72rem; color:var(--text-muted); margin-top:0.2rem; text-transform:uppercase; letter-spacing:0.05em; }
+.dash-stat-tile .tile-icon { width:40px; height:40px; margin:0 auto 0.5rem; display:block; object-fit:contain; transform: translateZ(30px); }
+.dash-stat-tile .tile-icon-emoji { font-size:1.75rem; margin-bottom:0.5rem; display:block; transform: translateZ(30px); }
+.dash-stat-tile .tile-val { font-size:1.5rem; font-weight:800; color:var(--dark); transform: translateZ(20px); }
+.dash-stat-tile .tile-lbl { font-size:0.72rem; color:var(--text-muted); margin-top:0.2rem; text-transform:uppercase; letter-spacing:0.05em; transform: translateZ(10px); }
 </style>
 {% endblock %}
 
 {% block content %}
+
+
+
 <div class="dashboard-layout">
 
   <!-- Main Left Column -->
@@ -61,9 +112,9 @@
     </div>
 
     <!-- Learning Streak -->
-    <div class="glass-card animate-fade-in stagger-1" style="padding:1.5rem;margin-bottom:1.5rem;">
+    <div class="section-card-dark animate-fade-in stagger-1" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <h3 style="margin:0;color:var(--dark);font-size:1rem;font-weight:800;">Your Learning Streak</h3>
+        <h3><img src="{% static 'img/torch.png' %}" style="width:20px;height:20px;margin-right:8px;vertical-align:middle;" alt="">Your Learning Streak</h3>
         <span style="font-size:0.75rem;background:var(--primary);color:var(--dark);padding:0.2rem 0.65rem;border-radius:9999px;font-weight:700;">🔥 Active</span>
       </div>
       <div class="streak-container">
@@ -79,8 +130,8 @@
     </div>
 
     <!-- Radar Chart -->
-    <div class="glass-card animate-fade-in stagger-2" style="padding:1.5rem;">
-      <h3 style="margin:0 0 1rem;color:var(--dark);font-size:1rem;font-weight:800;">Module Mastery</h3>
+    <div class="mastery-card-dark animate-fade-in stagger-2" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000">
+      <h3><img src="{% static 'img/cubes.png' %}" style="width:20px;height:20px;margin-right:8px;vertical-align:middle;" alt="">Module Mastery</h3>
       <div class="radar-container">
         <canvas id="radarChart"></canvas>
       </div>
@@ -95,8 +146,8 @@
       </div>
       <div class="dash-stat-grid" style="margin-top:0.5rem;">
         {% for icon, value, label in stats %}
-        <div class="dash-stat-tile">
-          <div class="tile-icon">{{ icon }}</div>
+        <div class="dash-stat-tile" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-scale="1.05">
+          <img class="tile-icon" src="{% static 'img/' %}{{ icon }}" alt="{{ label }}">
           <div class="tile-val">{{ value }}</div>
           <div class="tile-lbl">{{ label }}</div>
         </div>
@@ -105,7 +156,7 @@
     </div>
 
     <!-- Quick nav -->
-    <div class="quick-actions-card">
+    <div class="quick-actions-card" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000">
       <h3>Quick Actions</h3>
       <a href="/modules/" class="quick-link">
         <div class="quick-link-icon">📚</div>
@@ -122,10 +173,10 @@
         <div class="quick-link-text"><h4>AI Assistant</h4><p>Ask anything</p></div>
         <span class="quick-link-arrow">›</span>
       </a>
-    </div>
-  </div>
+    </div><!-- /dashboard-sidebar -->
+</div><!-- /dashboard-layout -->
 
-</div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
