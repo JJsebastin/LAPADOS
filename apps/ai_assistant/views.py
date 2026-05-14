@@ -3,10 +3,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from django.conf import settings
 from groq import Groq
 
 # Configure Groq
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+client = Groq(api_key=settings.GROQ_API_KEY)
 
 SYSTEM_PROMPT = """You are LAPDOS AI — an expert anti-doping assistant trained on WADA guidelines, 
 the Prohibited List, supplement safety, and athlete health. When analyzing drugs/supplements:

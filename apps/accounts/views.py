@@ -9,8 +9,9 @@ def profile(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     attempts = QuizAttempt.objects.filter(user=request.user).order_by("-created_at")[:5]
     blogs = Blog.objects.filter(author=request.user).order_by("-created_at")[:5]
+    published_blogs_count = Blog.objects.filter(author=request.user, is_approved=True).count()
     return render(request, "accounts/profile.html", {
-        "profile": profile, "attempts": attempts, "blogs": blogs
+        "profile": profile, "attempts": attempts, "blogs": blogs, "published_blogs_count": published_blogs_count
     })
 
 @login_required

@@ -562,18 +562,8 @@
             <div class="stat-lbl">DAY STREAK</div>
           </div>
           <div class="stat-box">
-            <div class="stat-icon-wrap">🏆</div>
-            <div class="stat-val">{{ profile.certificates|default:"8" }}</div>
-            <div class="stat-lbl">CERTIFICATES</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-icon-wrap">⏱️</div>
-            <div class="stat-val">{{ profile.learning_time_hours|default:"42" }}<span class="unit">h</span></div>
-            <div class="stat-lbl">LEARNING TIME</div>
-          </div>
-          <div class="stat-box">
             <div class="stat-icon-wrap">💬</div>
-            <div class="stat-val">{{ profile.contributions|default:"128" }}</div>
+            <div class="stat-val">{{ published_blogs_count|default:"0" }}</div>
             <div class="stat-lbl">CONTRIBUTIONS</div>
           </div>
         </div>
