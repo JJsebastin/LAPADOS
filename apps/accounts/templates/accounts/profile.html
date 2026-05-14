@@ -583,10 +583,11 @@
             <span class="qa-text">Ask AI Assistant</span>
             <span class="qa-arrow">›</span>
           </a>
-          <a href="#" class="qa-item">
+          {% load static %}
+          <a href="{% static 'docs/WADA_prohibited_list.pdf' %}" class="qa-item" download>
             <div class="qa-icon red-icon">🛡️</div>
-            <span class="qa-text">Prohibited List Update</span>
-            <span class="qa-arrow">›</span>
+            <span class="qa-text">Prohibited List</span>
+            <span class="qa-arrow">↓</span>
           </a>
         </div>
       </div>
