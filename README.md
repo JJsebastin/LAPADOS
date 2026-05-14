@@ -24,6 +24,17 @@ Lapdos is an educational platform built with Django, featuring user accounts, le
 - `templates/` - Global HTML templates
 - `static/` - Global static assets (CSS, JS, images)
 
+--------------
+
+## updates
+
+- Integrated 3D effects
+- and changed the UI design of all templates and pages
+
+
+
+
+
 ## Setup Instructions
 
 1. **Clone the repository** (if applicable):
