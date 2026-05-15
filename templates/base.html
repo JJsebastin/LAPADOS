@@ -4,15 +4,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}LAPDOS — Anti-Doping Platform{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}LAPDOS: Learn, Quiz, and Discover the truth about anti-doping in sports. Powered by AI.{% endblock %}"/>
+  <title>{% block title %}LAPADOS — Anti-Doping Platform{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}LAPADOS: Learn, Quiz, and Discover the truth about anti-doping in sports. Powered by AI.{% endblock %}"/>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=6">
+  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=8">
   
   {% block extra_head %}{% endblock %}
 </head>
@@ -23,7 +23,7 @@
     <!-- Brand -->
     <div class="sidebar-header">
       <a href="/" class="brand-link">
-        <span class="brand-full">LAP<span class="text-brand-green">DOS</span></span>
+        <span class="brand-full">LAPA<span class="text-brand-green">DOS</span></span>
         <span class="brand-short">L<span class="text-brand-green">D</span></span>
       </a>
     </div>
@@ -40,19 +40,19 @@
     <!-- Navigation Links -->
     <nav class="sidebar-nav">
       <a href="/" class="nav-link {% block nav_dashboard %}{% endblock %}">
-        <span class="nav-icon">📊</span>
+        <span class="nav-icon"><img src="{% static 'img/dashboard.png' %}" alt="Dashboard" width="24" height="24" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
         <span class="nav-text">Dashboard</span>
       </a>
       <a href="/blogs/" class="nav-link {% block nav_blogs %}{% endblock %}">
-        <span class="nav-icon">📝</span>
-        <span class="nav-text">Workspace</span>
+        <span class="nav-icon"><img src="{% static 'img/blog.png' %}" alt="Blogs" width="24" height="24" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
+        <span class="nav-text">Blogs</span>
       </a>
       <a href="/ai/" class="nav-link {% block nav_ai %}{% endblock %}">
-        <span class="nav-icon">🤖</span>
+        <span class="nav-icon"><img src="{% static 'img/chat-bot.png' %}" alt="Messages" width="24" height="24" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
         <span class="nav-text">Messages</span>
       </a>
       <a href="/modules/" class="nav-link {% block nav_moduloz %}{% endblock %}">
-        <span class="nav-icon">📚</span>
+        <span class="nav-icon"><img src="{% static 'img/cubes.png' %}" alt="Moduloz" width="24" height="24" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
         <span class="nav-text">Moduloz</span>
       </a>
       

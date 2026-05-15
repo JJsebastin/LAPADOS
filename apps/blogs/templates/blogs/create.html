@@ -33,11 +33,34 @@
 
     <div class="form-group">
       <label class="form-label">Content</label>
-      <textarea name="content" id="id_content" rows="10" required
-        placeholder="Write your anti-doping article here..."
-        class="form-input form-textarea">{{ form.content.value|default:'' }}</textarea>
+      <textarea name="content" id="id_content" rows="12" required
+        placeholder="Write your blog in Markdown format...
+
+## Introduction
+Start with a compelling opening paragraph.
+
+## Key Points
+- Point one
+- Point two
+
+## Conclusion
+Wrap up with your key takeaways."
+        class="form-input form-textarea" style="font-family:monospace;font-size:0.9rem;">{{ form.content.value|default:'' }}</textarea>
       {% if form.content.errors %}<p style="color:var(--red);font-size:0.8rem;margin-top:0.25rem;">{{ form.content.errors|join:", " }}</p>{% endif %}
-      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;">Tip: You can use basic HTML tags (&lt;b&gt;, &lt;ul&gt;, &lt;h2&gt;)</p>
+      <!-- Markdown Hint Box -->
+      <div style="margin-top:0.75rem;background:rgba(212,239,68,0.08);border:1px solid rgba(212,239,68,0.4);border-left:3px solid var(--primary);border-radius:var(--radius-sm);padding:0.85rem 1rem;">
+        <p style="font-size:0.78rem;font-weight:700;color:#5a7a00;margin:0 0 0.5rem 0;">✍️ Write in Markdown format — it will render beautifully on the blog page.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem 1.5rem;font-size:0.72rem;color:var(--text-muted);font-family:monospace;">
+          <span><strong style="color:var(--dark);">## Heading</strong></span>
+          <span><strong style="color:var(--dark);">**bold**</strong></span>
+          <span><strong style="color:var(--dark);">*italic*</strong></span>
+          <span><strong style="color:var(--dark);">- list item</strong></span>
+          <span><strong style="color:var(--dark);">1. ordered</strong></span>
+          <span><strong style="color:var(--dark);">```code```</strong></span>
+          <span><strong style="color:var(--dark);">> blockquote</strong></span>
+          <span><strong style="color:var(--dark);">---</strong> (divider)</span>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load blog_filters %}
 {% block title %}{{ blog.title }} — LAPDOS{% endblock %}
 {% block nav_blogs %}active{% endblock %}
 {% block content %}
@@ -43,8 +44,8 @@
   {% endif %}
 
   <!-- Blog Content -->
-  <div class="module-content-card" style="margin-bottom:1.5rem;line-height:1.85;font-size:1rem;color:var(--text-main);">
-    {{ blog.content|safe }}
+  <div class="module-content-card markdown-body" style="margin-bottom:1.5rem;line-height:1.85;font-size:1rem;color:var(--text-main);">
+    {{ blog.content|markdown }}
   </div>
 
   <!-- Tags -->
