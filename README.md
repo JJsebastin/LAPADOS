@@ -1,4 +1,4 @@
-# Lapdos: Advanced Educational Platform
+# Lapdos: Learning , Awareness and Educational Platform
 
 Lapdos is a modern, modular educational platform built with Django, featuring user accounts, interactive learning modules, an integrated blogging system, and AI-powered assistance.
 
