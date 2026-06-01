@@ -19,9 +19,9 @@
     </div>
     <div class="modules-grid">
       {% for module in modules %}
-      <a href="{% url 'module_detail' module.slug %}" class="module-card" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-scale="1.02">
+      <a href="{% url 'lesson_detail' module.slug %}" class="module-card" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-scale="1.02">
         <div class="module-header">
-          <div style="width:46px;height:46px;border-radius:var(--radius-sm);background:rgba(212,239,68,0.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
+          <div style="width:46px;height:46px;border-radius:var(--radius-sm);background:rgba(246,215,247,0.3);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
             {{ module.icon|default:"📚" }}
           </div>
           <div class="module-title-wrap">
@@ -31,7 +31,7 @@
         </div>
         <div class="module-footer">
           <span class="module-status">⏱ {{ module.duration_mins }} min read</span>
-          <span class="btn-check">Start →</span>
+          <span class="btn-check">Start Lesson →</span>
         </div>
       </a>
       {% empty %}

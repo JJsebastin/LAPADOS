@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ module.title }} — LAPDOS Lesson{% endblock %}
+{% block nav_moduloz %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ══════════════════════════════════════════
+   CISCO-STYLE LESSON PAGE
+══════════════════════════════════════════ */
+
+/* Scroll Progress Bar (top of window) */
+#lesson-progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 4px;
+  width: 0%;
+  background: linear-gradient(90deg, #8F8186, #F6D7F7, #8F8186);
+  z-index: 9999;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px rgba(246,215,247,0.8);
+}
+
+/* Left TOC Rail */
+.lesson-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+  max-width: 1300px;
+}
+@media(max-width:900px){ .lesson-layout{ grid-template-columns:1fr; } }
+
+.lesson-toc {
+  position: sticky;
+  top: 1rem;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(246,215,247,0.5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(143,129,134,0.1);
+}
+.lesson-toc h4 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8F8186;
+  margin: 0 0 1rem;
+}
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: #8F8186;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  border-left: 3px solid transparent;
+}
+.toc-item:hover { background: rgba(246,215,247,0.3); color: #222; }
+.toc-item.active {
+  background: rgba(246,215,247,0.6);
+  color: #222;
+  border-left-color: #8F8186;
+}
+.toc-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.toc-item.active .toc-dot,
+.toc-item.done .toc-dot { background: #8F8186; }
+.toc-item.done { color: #8F8186; }
+
+/* Module Complete % */
+.toc-progress-ring {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(143,129,134,0.15);
+}
+.ring-wrap { position: relative; width: 48px; height: 48px; flex-shrink:0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: #eee; stroke-width: 4; }
+.ring-fill { fill: none; stroke: #8F8186; stroke-width: 4; stroke-linecap: round;
+  stroke-dasharray: 138; stroke-dashoffset: 138; transition: stroke-dashoffset 0.6s ease; }
+.ring-pct { position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size: 0.65rem; font-weight: 800; color:#222; }
+.toc-progress-label { font-size: 0.75rem; color: #8F8186; font-weight: 600; line-height:1.4; }
+
+/* Main Lesson Content */
+.lesson-content { display: flex; flex-direction: column; gap: 2.5rem; }
+
+/* Section Wrapper */
+.lesson-section {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(143,129,134,0.08);
+  transition: box-shadow 0.3s;
+  scroll-margin-top: 20px;
+}
+.lesson-section:hover { box-shadow: 0 12px 40px rgba(143,129,134,0.14); }
+
+/* Section heading banner */
+.section-banner {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(246,215,247,0.6);
+}
+.section-num {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, #8F8186, #6a5f63);
+  color: white; font-weight: 800; font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 4px 12px rgba(143,129,134,0.3);
+}
+.section-banner h2 {
+  font-size: 1.3rem; font-weight: 800; color: #222;
+  margin: 0; letter-spacing: -0.03em;
+}
+.section-banner .section-tag {
+  margin-left: auto;
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(246,215,247,0.6); color: #8F8186;
+  padding: 0.3rem 0.75rem; border-radius: 20px; font-weight: 700;
+}
+
+/* ── Callout / Info Boxes ── */
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0; display: flex; gap: 1rem; align-items: flex-start;
+  font-size: 0.9rem; line-height: 1.6;
+}
+.callout-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+.callout-body strong { display: block; font-size: 0.75rem; text-transform:uppercase;
+  letter-spacing: 0.07em; margin-bottom: 0.3rem; }
+
+.callout-note   { background: #EBF3FF; border-left: 4px solid #2F80ED; }
+.callout-note   .callout-body strong { color: #2F80ED; }
+.callout-warn   { background: #FFF8E1; border-left: 4px solid #F59E0B; }
+.callout-warn   .callout-body strong { color: #D97706; }
+.callout-danger { background: #FFF0F0; border-left: 4px solid #E74C3C; }
+.callout-danger .callout-body strong { color: #E74C3C; }
+.callout-tip    { background: #EDFAF1; border-left: 4px solid #27AE60; }
+.callout-tip    .callout-body strong { color: #27AE60; }
+
+/* ── Diagram Boxes ── */
+.diagram-wrap {
+  background: linear-gradient(135deg, #f8f4ff 0%, #fff5fb 100%);
+  border: 1px dashed rgba(143,129,134,0.35);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+  text-align: center; position: relative; overflow: hidden;
+}
+.diagram-wrap::before {
+  content: 'DIAGRAM';
+  position: absolute; top: 0.6rem; left: 1rem;
+  font-size: 0.6rem; letter-spacing: 0.12em; font-weight: 800;
+  color: rgba(143,129,134,0.4); text-transform: uppercase;
+}
+.diagram-label {
+  font-size: 0.78rem; color: #8F8186; margin-top: 1rem; font-style: italic;
+}
+
+/* Flow diagram nodes */
+.flow-diagram {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 0; margin: 1rem 0;
+}
+.flow-node {
+  background: white; border: 2px solid rgba(143,129,134,0.3);
+  border-radius: 12px; padding: 0.75rem 1.1rem;
+  font-size: 0.8rem; font-weight: 700; color: #333;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06); min-width: 100px; text-align: center;
+  position: relative;
+}
+.flow-node.primary {
+  background: linear-gradient(135deg,#8F8186,#6a5f63); color:white; border-color:transparent;
+}
+.flow-node.success { background: #EDFAF1; border-color: #27AE60; color: #27AE60; }
+.flow-node.danger  { background: #FFF0F0; border-color: #E74C3C; color: #E74C3C; }
+.flow-arrow {
+  font-size: 1.2rem; color: #8F8186; padding: 0 0.5rem; flex-shrink: 0;
+}
+
+/* Pyramid / tier diagram */
+.pyramid { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin: 1rem auto; }
+.pyramid-tier {
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.8rem; font-weight: 700; border-radius: 8px;
+  padding: 0.6rem 1rem; text-align: center;
+}
+
+/* ── Tables ── */
+.lesson-table-wrap { overflow-x: auto; margin: 1.5rem 0; border-radius: 12px; }
+.lesson-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+  border-radius: 12px; overflow: hidden;
+}
+.lesson-table thead { background: linear-gradient(135deg,#8F8186,#6a5f63); color:white; }
+.lesson-table thead th { padding: 0.9rem 1rem; text-align:left; font-size:0.75rem;
+  text-transform:uppercase; letter-spacing:0.06em; }
+.lesson-table tbody tr { border-bottom: 1px solid rgba(143,129,134,0.12); }
+.lesson-table tbody tr:last-child { border-bottom: none; }
+.lesson-table tbody tr:nth-child(even) { background: rgba(246,215,247,0.15); }
+.lesson-table td { padding: 0.8rem 1rem; vertical-align: top; color: #333; }
+.lesson-table td.td-label { font-weight: 700; color: #222; }
+.td-badge {
+  display: inline-block; padding: 0.25rem 0.7rem; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.td-badge.red   { background:#FFF0F0; color:#E74C3C; }
+.td-badge.green { background:#EDFAF1; color:#27AE60; }
+.td-badge.blue  { background:#EBF3FF; color:#2F80ED; }
+
+/* ── Key Term Highlight ── */
+.key-term {
+  display: inline-block; background: rgba(246,215,247,0.6);
+  color: #5a3f5c; font-weight: 700; padding: 0.1em 0.5em;
+  border-radius: 5px; font-size: 0.92em;
+}
+
+/* ── Definition List ── */
+.def-list { display: grid; gap: 0.75rem; margin: 1rem 0; }
+.def-item {
+  background: rgba(255,255,255,0.8); border: 1px solid rgba(143,129,134,0.15);
+  border-radius: 10px; padding: 0.9rem 1.1rem; display: flex; gap: 1rem;
+}
+.def-term { font-weight: 800; color: #222; min-width: 140px; font-size: 0.85rem; }
+.def-desc { color: #444; font-size: 0.85rem; line-height: 1.6; }
+
+/* ── Stats row ── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr));
+  gap: 1rem; margin: 1.5rem 0;
+}
+.stat-pill {
+  background: white; border: 1px solid rgba(143,129,134,0.15);
+  border-radius: 14px; padding: 1.1rem; text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+}
+.stat-pill .sp-num { font-size: 1.6rem; font-weight: 800; color: #8F8186; }
+.stat-pill .sp-lbl { font-size: 0.7rem; color: #aaa; text-transform: uppercase;
+  letter-spacing: 0.07em; margin-top: 0.2rem; }
+
+/* ── Module Header ── */
+.module-lesson-header {
+  background: linear-gradient(135deg, rgba(143,129,134,0.12) 0%, rgba(246,215,247,0.3) 100%);
+  border-radius: 20px; padding: 2rem 2.5rem; margin-bottom: 0.5rem;
+  border: 1px solid rgba(246,215,247,0.5);
+}
+.module-lesson-header .back-link {
+  font-size: 0.8rem; color: #8F8186; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem;
+  transition: color 0.2s;
+}
+.module-lesson-header .back-link:hover { color: #222; }
+.lesson-module-icon { font-size: 2.5rem; }
+.lesson-module-meta { font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #8F8186; font-weight: 700; margin-bottom: 0.4rem; }
+.lesson-module-title { font-size: 2rem; font-weight: 800; color: #222;
+  letter-spacing: -0.04em; margin: 0 0 0.5rem; }
+.lesson-meta-row {
+  display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.75rem;
+}
+.lesson-meta-chip {
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(143,129,134,0.2);
+  border-radius: 20px; padding: 0.3rem 0.85rem;
+  font-size: 0.75rem; font-weight: 600; color: #8F8186;
+}
+
+/* Complete Module Button */
+.btn-complete-module {
+  background: linear-gradient(135deg, #8F8186, #6a5f63);
+  color: white; border: none; border-radius: 12px;
+  padding: 1rem 2rem; font-size: 1rem; font-weight: 700;
+  cursor: pointer; width: 100%; margin-top: 1rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(143,129,134,0.3);
+}
+.btn-complete-module:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(143,129,134,0.4); }
+.btn-complete-module.done { background: linear-gradient(135deg, #27AE60, #1e8449); }
+
+/* Completion Banner */
+.completion-banner {
+  display: none;
+  background: linear-gradient(135deg, #EDFAF1, #D5F5E3);
+  border: 2px solid #27AE60; border-radius: 16px;
+  padding: 1.5rem 2rem; text-align: center; margin-top: 2rem;
+}
+.completion-banner.show { display: block; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes popIn { from{ transform:scale(0.8);opacity:0; } to{ transform:scale(1);opacity:1; } }
+
+/* Prose */
+.lesson-prose { font-size: 0.95rem; line-height: 1.8; color: #333; }
+.lesson-prose p { margin: 0 0 1rem; }
+.lesson-prose ul, .lesson-prose ol { padding-left: 1.5rem; margin: 0.75rem 0 1rem; }
+.lesson-prose li { margin-bottom: 0.4rem; }
+.lesson-prose strong { color: #222; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Scroll Progress Bar -->
+<div id="lesson-progress-bar"></div>
+
+<div class="lesson-layout animate-fade-in">
+
+  <!-- ── Left TOC ── -->
+  <aside class="lesson-toc" id="lesson-toc">
+    <h4>📋 In This Module</h4>
+    <div id="toc-links">
+      {% for sec in sections %}
+      <a href="#section-{{ forloop.counter }}" class="toc-item" data-sec="{{ forloop.counter }}">
+        <span class="toc-dot"></span>
+        {{ sec.title }}
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Progress Ring -->
+    <div class="toc-progress-ring">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 48 48" width="48" height="48">
+          <circle class="ring-bg" cx="24" cy="24" r="22"/>
+          <circle class="ring-fill" id="ring-fill" cx="24" cy="24" r="22"/>
+        </svg>
+        <span class="ring-pct" id="ring-pct">0%</span>
+      </div>
+      <div class="toc-progress-label">
+        Module<br>Completion
+      </div>
+    </div>
+
+    <!-- Complete Button -->
+    <button class="btn-complete-module" id="completeBtn" onclick="markComplete()">
+      ✅ Mark as Complete
+    </button>
+  </aside>
+
+  <!-- ── Main Lesson Content ── -->
+  <div class="lesson-content">
+
+    <!-- Module Header -->
+    <div class="module-lesson-header">
+      <a href="/modules/" class="back-link">← Back to Modules</a>
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <div class="lesson-module-icon">{{ module.icon|default:"📚" }}</div>
+        <div>
+          <div class="lesson-module-meta">MODULE {{ module.order }}</div>
+          <h1 class="lesson-module-title">{{ module.title }}</h1>
+          <div class="lesson-meta-row">
+            <span class="lesson-meta-chip">⏱ {{ module.duration_mins }} min</span>
+            <span class="lesson-meta-chip">📖 {{ sections|length }} Sections</span>
+            <span class="lesson-meta-chip">🎯 Quiz Included</span>
+          </div>
+        </div>
+      </div>
+      <p style="color:#8F8186;font-size:0.9rem;margin:1rem 0 0;line-height:1.6;">
+        {{ module.description }}
+      </p>
+    </div>
+
+    <!-- ── SECTIONS ── -->
+    {% for sec in sections %}
+    <div class="lesson-section" id="section-{{ forloop.counter }}" data-sec="{{ forloop.counter }}">
+      <div class="section-banner">
+        <div class="section-num">{{ forloop.counter }}</div>
+        <h2>{{ sec.title }}</h2>
+        <span class="section-tag">{{ sec.tag|default:"Lesson" }}</span>
+      </div>
+
+      <!-- Prose Content -->
+      <div class="lesson-prose">{{ sec.body|safe }}</div>
+
+      <!-- Callouts -->
+      {% if sec.callouts %}
+        {% for cb in sec.callouts %}
+        <div class="callout callout-{{ cb.type }}">
+          <span class="callout-icon">{{ cb.icon }}</span>
+          <div class="callout-body">
+            <strong>{{ cb.label }}</strong>
+            {{ cb.text }}
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Diagram -->
+      {% if sec.diagram %}
+      <div class="diagram-wrap">
+        {{ sec.diagram|safe }}
+        {% if sec.diagram_label %}<div class="diagram-label">{{ sec.diagram_label }}</div>{% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Table -->
+      {% if sec.table %}
+      <div class="lesson-table-wrap">
+        <table class="lesson-table">
+          <thead>
+            <tr>{% for col in sec.table.cols %}<th>{{ col }}</th>{% endfor %}</tr>
+          </thead>
+          <tbody>
+            {% for row in sec.table.rows %}
+            <tr>{% for cell in row %}<td>{{ cell|safe }}</td>{% endfor %}</tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Definition List -->
+      {% if sec.defs %}
+      <div class="def-list">
+        {% for d in sec.defs %}
+        <div class="def-item">
+          <span class="def-term">{{ d.term }}</span>
+          <span class="def-desc">{{ d.desc }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Stats Row -->
+      {% if sec.stats %}
+      <div class="stats-row">
+        {% for st in sec.stats %}
+        <div class="stat-pill">
+          <div class="sp-num">{{ st.num }}</div>
+          <div class="sp-lbl">{{ st.lbl }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+    {% endfor %}
+
+    <!-- ── Quiz CTA ── -->
+    {% if quizzes %}
+    <div class="lesson-section" style="text-align:center;">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem;">🎯</div>
+      <h2 style="font-size:1.4rem;margin:0 0 0.5rem;">Ready to Test Your Knowledge?</h2>
+      <p style="color:#8F8186;font-size:0.9rem;margin:0 0 1.5rem;">
+        This module has <strong>{{ quizzes|length }}</strong> quiz question{{ quizzes|length|pluralize }}. Take it to earn points!
+      </p>
+      <a href="{% url 'module_detail' module.slug %}" class="btn-primary" style="font-size:1rem;padding:0.9rem 2rem;">
+        🚀 Take the Quiz
+      </a>
+    </div>
+    {% endif %}
+
+    <!-- Completion Banner -->
+    <div class="completion-banner" id="completionBanner">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem;">🏆</div>
+      <h3 style="color:#27AE60;margin:0 0 0.4rem;">Module Complete!</h3>
+      <p style="color:#2e7d53;font-size:0.9rem;margin:0 0 1rem;">
+        You've finished <strong>{{ module.title }}</strong>. Take the quiz to earn points.
+      </p>
+      {% if quizzes %}
+      <a href="{% url 'module_detail' module.slug %}" class="btn-primary"
+        style="background:#27AE60;border:none;font-size:0.9rem;padding:0.75rem 1.75rem;">
+        Take the Quiz →
+      </a>
+      {% endif %}
+    </div>
+
+  </div><!-- /lesson-content -->
+</div><!-- /lesson-layout -->
+
+<script>
+// ── Scroll Progress Bar ──
+const bar = document.getElementById('lesson-progress-bar');
+const ringFill = document.getElementById('ring-fill');
+const ringPct  = document.getElementById('ring-pct');
+const sections = document.querySelectorAll('.lesson-section[data-sec]');
+const tocItems = document.querySelectorAll('.toc-item[data-sec]');
+const CIRCUMFERENCE = 138; // 2 * π * 22
+
+function updateProgress() {
+  const scrollable = document.querySelector('.content-scrollable');
+  const scrollTop  = scrollable.scrollTop;
+  const scrollH    = scrollable.scrollHeight - scrollable.clientHeight;
+  const pct = scrollH > 0 ? Math.min(100, Math.round((scrollTop / scrollH) * 100)) : 0;
+
+  bar.style.width = pct + '%';
+  ringFill.style.strokeDashoffset = CIRCUMFERENCE - (CIRCUMFERENCE * pct / 100);
+  ringPct.textContent = pct + '%';
+
+  // highlight active TOC item
+  let activeSet = false;
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    const toc  = document.querySelector(`.toc-item[data-sec="${sec.dataset.sec}"]`);
+    if (!toc) return;
+    if (rect.top <= 120 && rect.bottom >= 80) {
+      tocItems.forEach(t => t.classList.remove('active'));
+      toc.classList.add('active');
+      activeSet = true;
+    }
+    if (rect.bottom < 80) toc.classList.add('done');
+  });
+}
+
+// Attach to the scrollable div inside base.html
+document.addEventListener('DOMContentLoaded', () => {
+  const scrollable = document.querySelector('.content-scrollable');
+  if (scrollable) scrollable.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+});
+
+// ── Mark Complete ──
+function markComplete() {
+  const btn = document.getElementById('completeBtn');
+  btn.textContent = '🎉 Completed!';
+  btn.classList.add('done');
+  btn.disabled = true;
+  document.getElementById('completionBanner').classList.add('show');
+  // store in localStorage
+  localStorage.setItem('module_done_{{ module.slug }}', '1');
+  // scroll to banner
+  document.getElementById('completionBanner').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Restore from localStorage
+if (localStorage.getItem('module_done_{{ module.slug }}') === '1') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('completeBtn');
+    if (btn) { btn.textContent = '🎉 Completed!'; btn.classList.add('done'); btn.disabled = true; }
+  });
+}
+
+// Smooth scroll for TOC links
+document.querySelectorAll('.toc-item').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      document.querySelector('.content-scrollable').scrollTo({
+        top: target.offsetTop - 20, behavior: 'smooth'
+      });
+    }
+  });
+});
+</script>
+{% endblock %}

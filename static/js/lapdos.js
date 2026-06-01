@@ -279,6 +279,156 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return cookieValue;
     }
+
+    // ================================================================
+    // 6. Dark Mode Toggle — Design.md §7
+    // ================================================================
+    const darkModeToggle = document.getElementById('darkModeToggle');
     
-    console.log("LAPDOS Vanilla JS Loaded - Light Theme Updates Applied");
+    // Restore saved preference
+    const savedTheme = localStorage.getItem('lapdos-theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+    }
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('lapdos-theme', isDark ? 'dark' : 'light');
+        });
+    }
+
+    // ================================================================
+    // 7. GSAP Page Entry Animations — Design.md §5.4
+    // ================================================================
+    if (typeof gsap !== 'undefined') {
+        // Register ScrollTrigger if available
+        if (typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+
+        // Glass card entry animations
+        const glassCards = document.querySelectorAll('.glass-card, .feature-card, .stat-card, .module-card, .blog-card');
+        if (glassCards.length > 0) {
+            gsap.from(glassCards, {
+                opacity: 0,
+                y: 40,
+                stagger: 0.1,
+                duration: 0.6,
+                ease: 'power2.out',
+                scrollTrigger: typeof ScrollTrigger !== 'undefined' ? {
+                    trigger: glassCards[0],
+                    start: 'top 85%',
+                } : undefined,
+            });
+        }
+
+        // Removed sidebar nav item entry animation to prevent conflicts with CSS transitions
+        // and active states which caused items to disappear.
+
+        // Number counter animation for stat cards — Design.md §5.4
+        const statValues = document.querySelectorAll('.stat-value, .stat-number, [data-count]');
+        statValues.forEach(el => {
+            const targetValue = parseInt(el.textContent, 10) || parseInt(el.dataset.count, 10);
+            if (!isNaN(targetValue) && targetValue > 0) {
+                const obj = { value: 0 };
+                gsap.to(obj, {
+                    value: targetValue,
+                    duration: 1.5,
+                    ease: 'power1.out',
+                    snap: { value: 1 },
+                    scrollTrigger: typeof ScrollTrigger !== 'undefined' ? {
+                        trigger: el,
+                        start: 'top 85%',
+                    } : undefined,
+                    onUpdate: () => {
+                        el.textContent = Math.round(obj.value);
+                    }
+                });
+            }
+        });
+    }
+
+    // ================================================================
+    // 8. VanillaTilt — Design.md §5.2 (Tilt Effect — Stat Cards)
+    // ================================================================
+    if (typeof VanillaTilt !== 'undefined') {
+        // Enhanced config from Design.md: max:15, speed:400, glare with lime tint
+        const tiltElements = document.querySelectorAll('.stat-card, [data-tilt]');
+        if (tiltElements.length > 0) {
+            VanillaTilt.init(tiltElements, {
+                max: 15,
+                speed: 400,
+                glare: true,
+                'max-glare': 0.3,
+            });
+        }
+    }
+
+    // ================================================================
+    // 9. tsParticles Hero Section — Design.md §5.3
+    // ================================================================
+    const particlesContainer = document.getElementById('particles-hero');
+    if (particlesContainer && typeof tsParticles !== 'undefined') {
+        // Adjust particle count for mobile — Design.md §6
+        const isMobile = window.innerWidth < 768;
+        const particleCount = isMobile ? 0 : 60;
+
+        if (particleCount > 0) {
+            tsParticles.load('particles-hero', {
+                fullScreen: false,
+                particles: {
+                    number: { value: particleCount },
+                    color: { value: ['#CCF56A', '#A5D13B'] },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.6, random: true },
+                    size: { value: 3, random: true },
+                    links: {
+                        enable: true,
+                        distance: 120,
+                        color: '#CCF56A',
+                        opacity: 0.3,
+                        width: 1,
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1.2,
+                        direction: 'top',
+                        outModes: { default: 'out' },
+                    },
+                },
+                interactivity: {
+                    events: {
+                        onHover: {
+                            enable: true,
+                            mode: 'repulse',
+                        },
+                    },
+                    modes: {
+                        repulse: {
+                            distance: 80,
+                            duration: 0.4,
+                        },
+                    },
+                },
+                detectRetina: true,
+            });
+        }
+    }
+
+    // ================================================================
+    // 10. Accessible Focus States — Design.md §6 (Frontend Roadmap)
+    // ================================================================
+    // Ensure all interactive elements show focus ring on keyboard nav
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            document.body.classList.add('keyboard-nav');
+        }
+    });
+    document.addEventListener('mousedown', () => {
+        document.body.classList.remove('keyboard-nav');
+    });
+
+    console.log("LAPDOS v2.0 — All Systems Loaded");
 });

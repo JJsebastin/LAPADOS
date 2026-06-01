@@ -10,6 +10,12 @@ class UserProfile(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     role = models.CharField(max_length=20, choices=ROLES, default="athlete")
+    GENDERS = [
+        ("male", "Male"),
+        ("female", "Female"),
+        ("other", "Other"),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDERS, default="male", blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True)
     points = models.IntegerField(default=0)

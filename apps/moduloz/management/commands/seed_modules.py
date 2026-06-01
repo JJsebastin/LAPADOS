@@ -5,7 +5,7 @@ from django.utils.text import slugify
 MODULES = [
     {
         "title": "What is Doping?",
-        "icon": "🚫",
+        "icon": "BAN",
         "order": 1,
         "duration_mins": 8,
         "description": "Understand what doping means, its history, and why it's banned in sports.",
@@ -69,7 +69,7 @@ MODULES = [
     },
     {
         "title": "The WADA Prohibited List",
-        "icon": "📋",
+        "icon": "LIST",
         "order": 2,
         "duration_mins": 12,
         "description": "Explore the categories of banned substances and methods athletes must avoid.",
@@ -146,7 +146,7 @@ MODULES = [
     },
     {
         "title": "Therapeutic Use Exemptions (TUE)",
-        "icon": "💊",
+        "icon": "TUE",
         "order": 3,
         "duration_mins": 10,
         "description": "Learn how athletes with medical conditions can use prohibited substances legally.",
@@ -231,7 +231,7 @@ MODULES = [
     },
     {
         "title": "Testing & The Athlete Biological Passport",
-        "icon": "🧪",
+        "icon": "LAB",
         "order": 4,
         "duration_mins": 15,
         "description": "Discover how anti-doping testing works and how the ABP tracks athletes over time.",
@@ -310,7 +310,7 @@ MODULES = [
     },
     {
         "title": "Consequences of Doping",
-        "icon": "⚖️",
+        "icon": "LAW",
         "order": 5,
         "duration_mins": 8,
         "description": "Understand the sanctions, health risks, and career impact of doping violations.",

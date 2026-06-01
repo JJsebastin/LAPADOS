@@ -10,13 +10,16 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=8">
+  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=21">
   
   {% block extra_head %}{% endblock %}
 </head>
 <body class="layout-body">
+
+  <!-- Three.js Ambient Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
 
   <!-- Sidebar (Desktop & Mobile) -->
   <aside id="sidebar" class="sidebar">
@@ -40,7 +43,7 @@
     <!-- Navigation Links -->
     <nav class="sidebar-nav">
       <a href="/" class="nav-link {% block nav_dashboard %}{% endblock %}">
-        <span class="nav-icon"><img src="{% static 'img/dashboard.png' %}" alt="Dashboard" width="24" height="24" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
+        <span class="nav-icon"><img src="{% static 'img/activity.png' %}" alt="Dashboard" width="32" height="32" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
         <span class="nav-text">Dashboard</span>
       </a>
       <a href="/blogs/" class="nav-link {% block nav_blogs %}{% endblock %}">
@@ -48,7 +51,7 @@
         <span class="nav-text">Blogs</span>
       </a>
       <a href="/ai/" class="nav-link {% block nav_ai %}{% endblock %}">
-        <span class="nav-icon"><img src="{% static 'img/chat-bot.png' %}" alt="Messages" width="24" height="24" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
+        <span class="nav-icon"><img src="{% static 'img/chat-logo.png' %}" alt="AI Chatbot" width="32" height="32" style="width:32px;height:32px;max-width:32px;max-height:32px;object-fit:contain;display:block;"></span>
         <span class="nav-text">Messages</span>
       </a>
       <a href="/modules/" class="nav-link {% block nav_moduloz %}{% endblock %}">
@@ -89,7 +92,12 @@
     <!-- Top Header -->
     <header class="top-header" style="justify-content: flex-end;">
       <div class="header-actions">
-        <button class="icon-btn">🔔<span class="notification-badge"></span></button>
+        <!-- Dark Mode Toggle -->
+        <button id="darkModeToggle" class="icon-btn dark-mode-toggle" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
+          <span class="dark-mode-icon-light">☀️</span>
+          <span class="dark-mode-icon-dark">🌙</span>
+        </button>
+
       </div>
     </header>
 
@@ -112,16 +120,22 @@
     </div>
   </main>
 
-  <!-- Custom JS -->
-  <script src="{% static 'js/lapdos.js' %}"></script>
-  <!-- 3D Effects -->
+  <!-- ─── Library CDNs ──────────────────────────────────────── -->
+  <!-- Three.js (3D scenes) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+  <!-- GSAP + ScrollTrigger (animations) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <!-- VanillaTilt (card tilt effects) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      if (typeof VanillaTilt !== 'undefined') {
-        VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
-      }
-    });
-  </script>
+  <!-- tsParticles (hero particle system) -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="{% static 'js/lapdos.js' %}?v=20"></script>
+  <!-- 3D Ambient Background -->
+  <script src="{% static 'js/lapdos-3d.js' %}?v=1"></script>
+
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

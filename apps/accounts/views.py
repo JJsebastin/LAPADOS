@@ -27,6 +27,7 @@ def edit_profile(request):
         profile.country = request.POST.get("country", profile.country)
         profile.nationality = request.POST.get("nationality", profile.nationality)
         profile.social_media_link = request.POST.get("social_media_link", profile.social_media_link)
+        profile.gender = request.POST.get("gender", profile.gender)
         
         if "avatar" in request.FILES:
             profile.avatar = request.FILES["avatar"]

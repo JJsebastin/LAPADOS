@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("secure-dashboard-x7/", admin.site.urls),  # Hardened: non-default admin URL
     path("accounts/", include("allauth.urls")),
     path("", include("apps.moduloz.urls")),
     path("blogs/", include("apps.blogs.urls")),

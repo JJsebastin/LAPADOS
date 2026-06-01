@@ -43,6 +43,15 @@
     </div>
 
     <div class="form-group">
+      <label class="form-label">Gender</label>
+      <select name="gender" class="form-input">
+        <option value="male" {% if profile.gender == "male" %}selected{% endif %}>Male</option>
+        <option value="female" {% if profile.gender == "female" %}selected{% endif %}>Female</option>
+        <option value="other" {% if profile.gender == "other" %}selected{% endif %}>Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label class="form-label">Profile Picture (Avatar)</label>
       <div class="file-upload-zone">
         <input type="file" name="avatar" id="id_avatar" accept="image/*" class="file-input-hidden"/>
