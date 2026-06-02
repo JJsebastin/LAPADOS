@@ -5,117 +5,88 @@
 
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Three.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
 <style>
+/* ── Dashboard page-specific overrides ── */
+.dash-hero-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
 
+/* Streak card within section-card-dark */
+.streak-badge {
+  font-size: 0.72rem;
+  background: var(--accent);
+  color: #5a2a5a;
+  padding: 0.2rem 0.65rem;
+  border-radius: 99px;
+  font-weight: 700;
+}
 
-/* ── Contrasting section cards (Now Glassmorphic White/Silver/Greenish) ── */
-.section-card-dark {
-  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(212, 239, 68, 0.15) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid rgba(212, 239, 68, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-  transform-style: preserve-3d;
-}
-.section-card-dark h3 { color: var(--dark); font-size:1rem; font-weight:800; margin:0 0 1rem; transform: translateZ(30px); }
-.section-card-dark .streak-day {
-  background: rgba(255,255,255,0.6);
-  border: 1px solid rgba(0,0,0,0.05);
-  color: var(--text-muted);
-  transform: translateZ(20px);
-}
-.section-card-dark .streak-day.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--dark);
-}
-.section-card-dark p { color: var(--text-muted); margin:1rem 0 0; font-size:0.82rem; }
-
-/* Streak & stat tiles */
-.streak-container { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.streak-day {
-  width:40px; height:40px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:0.82rem; font-weight:700;
-  color:var(--text-muted);
-  background:var(--surface-alt);
-  border:1px solid var(--border);
-  transition:all 0.2s ease;
-}
-.streak-day.active {
-  background:var(--primary);
-  border-color:var(--primary);
-  color:var(--dark);
-  box-shadow:0 4px 10px rgba(212,239,68,0.35);
-  transform:scale(1.05);
-}
-.radar-container { width:100%; max-width:480px; margin:0 auto; }
-
-/* Module Mastery dark card (Now Glassmorphic White/Silver/Greenish) */
-.mastery-card-dark {
-  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(212, 239, 68, 0.15) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  border: 1px solid rgba(212, 239, 68, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-  transform-style: preserve-3d;
-}
-.mastery-card-dark h3 { color: var(--dark); font-size:1rem; font-weight:800; margin:0 0 1rem; transform: translateZ(30px); }
-.radar-container { transform: translateZ(20px); }
-
-/* Dashboard stats tiles */
-.dash-stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
-.dash-stat-tile {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  padding:1.25rem;
-  text-align:center;
-  transition:all 0.2s ease;
-  transform-style: preserve-3d;
-}
-.dash-stat-tile:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
-.dash-stat-tile .tile-icon { width:40px; height:40px; margin:0 auto 0.5rem; display:block; object-fit:contain; transform: translateZ(30px); }
-.dash-stat-tile .tile-icon-emoji { font-size:1.75rem; margin-bottom:0.5rem; display:block; transform: translateZ(30px); }
-.dash-stat-tile .tile-val { font-size:1.5rem; font-weight:800; color:var(--dark); transform: translateZ(20px); }
-.dash-stat-tile .tile-lbl { font-size:0.72rem; color:var(--text-muted); margin-top:0.2rem; text-transform:uppercase; letter-spacing:0.05em; transform: translateZ(10px); }
+/* Dark mode radar chart ticks */
+html.dark #radarChart { filter: brightness(0.85); }
 </style>
 {% endblock %}
 
 {% block content %}
 
-
-
-<div class="dashboard-layout">
-
-  <!-- Main Left Column -->
-  <div class="dashboard-main">
-
-    <!-- Welcome -->
-    <div class="welcome-card animate-fade-in">
-      <h1 class="welcome-title">
-        Hi, {{ user.username|default:"Athlete" }}!<br>
-        Here is your <span class="text-brand-green">analytics</span> dashboard.
+<!-- ════════════════════════════════════════════════════════
+     HERO SECTION — FYNSEC inspired
+════════════════════════════════════════════════════════ -->
+<div class="hero-card animate-fade-in">
+  <div class="hero-inner">
+    <!-- Left: Text -->
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span>🛡️</span> Anti-Doping Platform
+      </div>
+      <h1 class="hero-headline">
+        Learn, Quiz<br>&amp; Stay <span class="hero-accent">Clean.</span>
       </h1>
-      <p class="welcome-subtitle">Track your learning progress and stay compliant with anti-doping regulations.</p>
-      <div class="action-buttons" style="margin-top:1.25rem;">
-        <a href="/modules/" class="btn-secondary" style="font-size:0.85rem;padding:0.7rem 1.4rem;">Browse Modules</a>
-        <a href="/ai/" class="btn-primary" style="font-size:0.85rem;padding:0.7rem 1.4rem;">Ask AI</a>
+      <p class="hero-desc">
+        Hi, <strong>{{ user.username|default:"Athlete" }}</strong>! Track your progress, master modules, and stay compliant with anti-doping regulations — powered by AI.
+      </p>
+      <div class="hero-actions">
+        <a href="/modules/" class="btn-hero-primary" id="hero-browse-btn">
+          Browse Modules <span>→</span>
+        </a>
+        <a href="/ai/" class="btn-hero-secondary" id="hero-ai-btn">
+          Ask AI ↗
+        </a>
       </div>
     </div>
 
+    <!-- Right: 3D floating visual (generated illustration) -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-3d-scene" id="hero3dScene">
+        <img
+          src="{% static 'img/hero-3d.png' %}"
+          alt="3D abstract anti-doping illustration"
+          style="width:100%;height:100%;object-fit:contain;border-radius:var(--radius-lg);filter:drop-shadow(0 16px 40px rgba(143,129,134,0.25));"
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MAIN DASHBOARD LAYOUT
+════════════════════════════════════════════════════════ -->
+<div class="dashboard-layout">
+
+  <!-- Left column -->
+  <div class="dashboard-main">
+
     <!-- Learning Streak -->
-    <div class="section-card-dark animate-fade-in stagger-1" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000">
+    <div class="section-card-dark animate-fade-in stagger-1"
+         data-tilt data-tilt-max="4" data-tilt-speed="400" data-tilt-perspective="1200">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <h3><img src="{% static 'img/torch.png' %}" style="width:20px;height:20px;margin-right:8px;vertical-align:middle;" alt="">Your Learning Streak</h3>
-        <span style="font-size:0.75rem;background:var(--primary);color:var(--dark);padding:0.2rem 0.65rem;border-radius:9999px;font-weight:700;">🔥 Active</span>
+        <h3>
+          <img src="{% static 'img/torch.png' %}" style="width:18px;height:18px;margin-right:7px;vertical-align:middle;" alt="">
+          Your Learning Streak
+        </h3>
+        <span class="streak-badge">🔥 Active</span>
       </div>
       <div class="streak-container">
         {% for day in streak_days_list %}
@@ -124,29 +95,38 @@
         </div>
         {% endfor %}
       </div>
-      <p style="margin:1rem 0 0;font-size:0.82rem;color:var(--text-muted);">
+      <p style="margin:0.85rem 0 0;">
         {% if user.is_authenticated %}Keep taking quizzes to maintain your streak!{% else %}Log in to track your streak.{% endif %}
       </p>
     </div>
 
-    <!-- Radar Chart -->
-    <div class="mastery-card-dark animate-fade-in stagger-2" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000">
-      <h3><img src="{% static 'img/cubes.png' %}" style="width:20px;height:20px;margin-right:8px;vertical-align:middle;" alt="">Module Mastery</h3>
+    <!-- Module Mastery Radar -->
+    <div class="mastery-card-dark animate-fade-in stagger-2"
+         data-tilt data-tilt-max="4" data-tilt-speed="400" data-tilt-perspective="1200">
+      <h3>
+        <img src="{% static 'img/cubes.png' %}" style="width:18px;height:18px;margin-right:7px;vertical-align:middle;" alt="">
+        Module Mastery
+      </h3>
       <div class="radar-container">
         <canvas id="radarChart"></canvas>
       </div>
     </div>
-  </div>
 
-  <!-- Right Sidebar -->
+  </div><!-- /dashboard-main -->
+
+  <!-- Right sidebar -->
   <div class="dashboard-sidebar animate-fade-in stagger-3">
+
+    <!-- Platform stats -->
     <div class="calendar-widget">
       <div class="calendar-header">
-        <span style="color:var(--dark);font-weight:800;font-size:1rem;">Platform Stats</span>
+        <span style="font-weight:800;font-size:0.92rem;">Platform Stats</span>
       </div>
-      <div class="dash-stat-grid" style="margin-top:0.5rem;">
+      <div class="dash-stat-grid">
         {% for icon, value, label in stats %}
-        <div class="dash-stat-tile" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-scale="1.05">
+        <div class="dash-stat-tile"
+             data-tilt data-tilt-max="10" data-tilt-speed="400"
+             data-tilt-perspective="800" data-tilt-scale="1.04">
           <img class="tile-icon" src="{% static 'img/' %}{{ icon }}" alt="{{ label }}">
           <div class="tile-val">{{ value }}</div>
           <div class="tile-lbl">{{ label }}</div>
@@ -155,32 +135,45 @@
       </div>
     </div>
 
-    <!-- Quick nav -->
-    <div class="quick-actions-card" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-perspective="1000">
+    <!-- Quick actions -->
+    <div class="quick-actions-card"
+         data-tilt data-tilt-max="4" data-tilt-speed="400" data-tilt-perspective="1000">
       <h3>Quick Actions</h3>
-      <a href="/modules/" class="quick-link">
+      <a href="/modules/" class="quick-link" id="ql-modules">
         <div class="quick-link-icon">📚</div>
         <div class="quick-link-text"><h4>Browse Modules</h4><p>Continue learning</p></div>
         <span class="quick-link-arrow">›</span>
       </a>
-      <a href="/blogs/" class="quick-link">
+      <a href="/blogs/" class="quick-link" id="ql-blogs">
         <div class="quick-link-icon">📝</div>
         <div class="quick-link-text"><h4>Read Blogs</h4><p>Community insights</p></div>
         <span class="quick-link-arrow">›</span>
       </a>
-      <a href="/ai/" class="quick-link">
+      <a href="/ai/" class="quick-link" id="ql-ai">
         <div class="quick-link-icon">🤖</div>
         <div class="quick-link-text"><h4>AI Assistant</h4><p>Ask anything</p></div>
         <span class="quick-link-arrow">›</span>
       </a>
-    </div><!-- /dashboard-sidebar -->
+    </div>
+
+  </div><!-- /dashboard-sidebar -->
 </div><!-- /dashboard-layout -->
 
 
-
+<!-- ════════════════════════════════════════════════════════
+     RADAR CHART JS
+════════════════════════════════════════════════════════ -->
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const ctx = document.getElementById('radarChart').getContext('2d');
+document.addEventListener("DOMContentLoaded", function () {
+  const ctx = document.getElementById('radarChart');
+  if (!ctx) return;
+
+  // Detect dark mode for chart colours
+  const isDark = document.documentElement.classList.contains('dark');
+  const gridColor  = isDark ? 'rgba(246,215,247,0.08)' : 'rgba(0,0,0,0.07)';
+  const tickColor  = isDark ? 'rgba(244,240,244,0.5)'  : '#666';
+  const labelColor = isDark ? '#F4F0F4'                : '#1A1A1A';
+
   new Chart(ctx, {
     type: 'radar',
     data: {
@@ -189,29 +182,52 @@ document.addEventListener("DOMContentLoaded", function() {
         label: 'Quiz Scores (%)',
         data: {{ radar_data|safe }},
         fill: true,
-        backgroundColor: 'rgba(212,239,68,0.18)',
-        borderColor: '#D4EF44',
-        pointBackgroundColor: '#D4EF44',
+        backgroundColor: 'rgba(246,215,247,0.2)',
+        borderColor: '#D4a0d4',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#D4a0d4',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#D4EF44'
+        pointHoverBorderColor: '#D4a0d4',
       }]
     },
     options: {
-      elements: { line: { borderWidth: 2.5 } },
-      plugins: { legend: { labels: { color: '#666', font: { size: 12 } } } },
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: labelColor, font: { size: 11, weight: '600' } } }
+      },
       scales: {
         r: {
-          angleLines: { color: 'rgba(0,0,0,0.08)' },
-          grid: { color: 'rgba(0,0,0,0.06)' },
-          ticks: { color: '#666', backdropColor: 'transparent', font: { size: 10 } },
-          pointLabels: { color: '#1A1A1A', font: { size: 11, weight: '600' } },
+          angleLines: { color: gridColor },
+          grid: { color: gridColor },
+          ticks: { color: tickColor, backdropColor: 'transparent', font: { size: 9 } },
+          pointLabels: { color: labelColor, font: { size: 11, weight: '600' } },
           suggestedMin: 0,
           suggestedMax: 100
         }
       }
     }
   });
+
+  // Parallax on hero cards (mouse move) — lightweight, no Three.js
+  const scene = document.getElementById('hero3dScene');
+  const card1  = document.getElementById('heroCard1');
+  const card2  = document.getElementById('heroCard2');
+  const card3  = document.getElementById('heroCard3');
+  if (scene && card1) {
+    document.addEventListener('mousemove', (e) => {
+      const cx = window.innerWidth  / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;   // -1 to 1
+      const dy = (e.clientY - cy) / cy;
+      const strength = 6;
+      scene.style.transform = `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg)`;
+    });
+    document.addEventListener('mouseleave', () => {
+      scene.style.transform = '';
+    });
+  }
 });
 </script>
+
 {% endblock %}

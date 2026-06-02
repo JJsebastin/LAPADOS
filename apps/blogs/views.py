@@ -34,6 +34,7 @@ def create_blog(request):
     return render(request, "blogs/create.html", {"form": form})
 
 
+@login_required
 def blog_list(request):
     blogs = Blog.objects.filter(is_approved=True)
     return render(request, "blogs/list.html", {
@@ -41,6 +42,7 @@ def blog_list(request):
         "filter_choices": FILTER_CHOICES,
     })
 
+@login_required
 def blog_detail(request, slug):
     blog = get_object_or_404(Blog, slug=slug, is_approved=True)
     return render(request, "blogs/detail.html", {"blog": blog})

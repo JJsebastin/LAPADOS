@@ -6,6 +6,15 @@ import json
 from .models import Module, Quiz, QuizAttempt
 from apps.accounts.models import UserProfile
 
+
+def landing(request):
+    """Public landing page — redirects authenticated users straight to the dashboard."""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'landing.html')
+
+
+@login_required(login_url='/accounts/login/')
 def dashboard(request):
     modules = Module.objects.all()
     from apps.blogs.models import Blog
@@ -58,6 +67,8 @@ def dashboard(request):
         "streak_days_list": streak_days_list,
     })
 
+
+@login_required(login_url='/accounts/login/')
 def moduloz_list(request):
     modules = Module.objects.all()
     quizzes = Quiz.objects.all().select_related("module")
@@ -67,15 +78,14 @@ def moduloz_list(request):
     })
 
 
+@login_required(login_url='/accounts/login/')
 def module_detail(request, slug):
     module = get_object_or_404(Module, slug=slug)
     quizzes = module.quizzes.all()
     return render(request, "moduloz/detail.html", {"module": module, "quizzes": quizzes})
 
 
-# ─────────────────────────────────────────────
-#  Cisco-style Lesson View
-# ─────────────────────────────────────────────
+
 MODULE_LESSONS = {
     "what-is-doping": [
         {
@@ -226,6 +236,7 @@ DEFAULT_SECTIONS = [
 ]
 
 
+@login_required(login_url='/accounts/login/')
 def lesson_detail(request, slug):
     module = get_object_or_404(Module, slug=slug)
     quizzes = module.quizzes.all()
