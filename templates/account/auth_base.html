@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Auth — LAPDOS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet"/>
+  
+  <style>
+    /* Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-weight: 500;
+      background: #FAF8F5;
+      color: #1A1A1A;
+      overflow: hidden; /* Prevent scrolling for auth pages */
+      letter-spacing: -0.015em;
+    }
+    a { text-decoration: none; color: inherit; }
+    
+    /* 3D Background Canvas */
+    #auth-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* Ambient orbs */
+    .orb {
+      position: fixed; border-radius: 50%;
+      pointer-events: none; z-index: 0; filter: blur(70px);
+    }
+    .orb-1 {
+      width: 650px; height: 650px;
+      top: -15%; right: -10%;
+      background: radial-gradient(circle, rgba(246,215,247,0.8) 0%, transparent 70%);
+      animation: drift1 12s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      width: 550px; height: 550px;
+      bottom: -10%; left: -8%;
+      background: radial-gradient(circle, rgba(212,239,68,0.3) 0%, transparent 70%);
+      animation: drift2 15s ease-in-out infinite alternate;
+    }
+    @keyframes drift1 {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, -30px) scale(1.08); }
+    }
+    @keyframes drift2 {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(-30px, 40px) scale(1.06); }
+    }
+
+    /* Auth Wrapper & Card */
+    .auth-wrapper {
+      position: relative; z-index: 10;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .auth-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(24px) saturate(1.8);
+      -webkit-backdrop-filter: blur(24px) saturate(1.8);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      padding: 3rem;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    
+    .auth-brand {
+      text-align: center;
+      font-size: 1.8rem; font-weight: 800;
+      margin-bottom: 2rem;
+    }
+    .auth-brand-dot {
+      width: 16px; height: 16px;
+      background: linear-gradient(135deg, #F6D7F7, #D4EF44);
+      border-radius: 4px; transform: rotate(45deg);
+      display: inline-block; margin-right: 8px;
+      box-shadow: 0 2px 8px rgba(246,215,247,0.7);
+    }
+    
+    .auth-title {
+      font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;
+    }
+    .auth-subtitle {
+      font-size: 0.95rem; color: #8F8186; margin-bottom: 2rem; text-align: center;
+    }
+
+    /* Form Styles */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label {
+      display: block; font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 0.5rem; color: #1A1A1A;
+    }
+    .form-input {
+      width: 100%; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.5);
+      border: 1.5px solid rgba(26,26,26,0.1);
+      border-radius: 12px;
+      font-family: inherit; font-size: 0.95rem; color: #1A1A1A;
+      transition: all 0.2s;
+    }
+    .form-input:focus {
+      outline: none; background: rgba(255,255,255,0.8);
+      border-color: #1A1A1A; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .btn-submit {
+      width: 100%; background: #1A1A1A; color: #fff;
+      padding: 0.95rem; border-radius: 12px;
+      font-weight: 800; font-size: 1rem; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s; margin-top: 1rem;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .auth-footer {
+      margin-top: 2rem; text-align: center; font-size: 0.9rem; color: #8F8186;
+    }
+    .auth-footer a {
+      color: #1A1A1A; font-weight: 700; margin-left: 0.3rem;
+    }
+    .auth-footer a:hover { text-decoration: underline; }
+
+    .auth-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem; font-size: 0.85rem; font-weight: 600;
+    }
+    .auth-forgot { color: #8F8186; transition: color 0.2s; }
+    .auth-forgot:hover { color: #1A1A1A; }
+    
+    .auth-error {
+      background: #FFEEEE; color: #e74c3c;
+      padding: 0.75rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 1.25rem; text-align: center;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<canvas id="auth-canvas"></canvas>
+
+{% block content %}{% endblock %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<script>
+(function () {
+  const canvas = document.getElementById('auth-canvas');
+  if (!canvas || typeof THREE === 'undefined') return;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 80);
+  camera.position.z = 12;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const pl1 = new THREE.PointLight(0xF6D7F7, 1.0, 30); pl1.position.set(4, 4, 4); scene.add(pl1);
+  const pl2 = new THREE.PointLight(0xD4EF44, 0.5, 30); pl2.position.set(-4, -4, 4); scene.add(pl2);
+
+  // Add 3D shapes representing design elements
+  const shapes = [
+    { geo: new THREE.IcosahedronGeometry(1.2, 0), color: 0xF6D7F7, pos: [-5, 3, -2] },
+    { geo: new THREE.TorusGeometry(0.8, 0.3, 16, 100), color: 0xD4EF44, pos: [5, -2, -3] },
+    { geo: new THREE.ConeGeometry(0.8, 1.6, 32), color: 0x8F8186, pos: [-4, -3, -4] },
+    { geo: new THREE.OctahedronGeometry(1, 0), color: 0xF6D7F7, pos: [4, 4, -5] },
+  ];
+
+  const meshes = shapes.map(({ geo, color, pos }) => {
+    const mat  = new THREE.MeshPhysicalMaterial({ 
+      color, metalness: 0.1, roughness: 0.2, transmission: 0.9, thickness: 0.5, opacity: 1, transparent: true
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(...pos);
+    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    mesh.userData = { 
+      basePos: [...pos], 
+      rotSpeed: 0.002 + Math.random() * 0.003, 
+      driftSpeed: 0.5 + Math.random() * 0.5, 
+      driftAmp: 0.5 + Math.random() * 0.5, 
+      phase: Math.random() * Math.PI * 2 
+    };
+    scene.add(mesh);
+    return mesh;
+  });
+
+  let time = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    time += 0.01;
+    meshes.forEach(m => {
+      const d = m.userData;
+      m.rotation.x += d.rotSpeed;
+      m.rotation.y += d.rotSpeed * 0.8;
+      m.position.x = d.basePos[0] + Math.sin(time * d.driftSpeed + d.phase) * d.driftAmp;
+      m.position.y = d.basePos[1] + Math.cos(time * d.driftSpeed * 0.7 + d.phase) * d.driftAmp;
+    });
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+</script>
+</body>
+</html>

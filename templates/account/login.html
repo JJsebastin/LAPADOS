@@ -1,14 +1,18 @@
-{% extends "base.html" %}
+{% extends "account/auth_base.html" %}
 
 {% block title %}Sign In — LAPDOS{% endblock %}
 
 {% block content %}
 <div class="auth-wrapper">
   <div class="auth-card">
+    <div class="auth-brand">
+      <span class="auth-brand-dot"></span>LAPA<span style="color:#8a4a8a;">DOS</span>
+    </div>
+    
     <h1 class="auth-title">Welcome Back</h1>
     <p class="auth-subtitle">Sign in to continue to LAPDOS</p>
 
-    <form method="POST" action="{% url 'account_login' %}" class="auth-form">
+    <form method="POST" action="{% url 'account_login' %}">
       {% csrf_token %}
       
       {% if redirect_field_value %}
@@ -32,14 +36,14 @@
       </div>
 
       <div class="auth-row">
-        <label class="auth-remember">
-          <input type="checkbox" name="remember" id="id_remember">
+        <label>
+          <input type="checkbox" name="remember" id="id_remember" style="margin-right: 0.3rem;">
           Remember me
         </label>
         <a href="{% url 'account_reset_password' %}" class="auth-forgot">Forgot password?</a>
       </div>
 
-      <button type="submit" class="btn-primary btn-submit" style="margin-top: 0.5rem;">Sign In</button>
+      <button type="submit" class="btn-submit">Sign In</button>
     </form>
 
     <div class="auth-footer">

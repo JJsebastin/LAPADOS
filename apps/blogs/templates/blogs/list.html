@@ -11,12 +11,7 @@
     <h1 class="page-title" style="margin-bottom:0.4rem;">Anti-Doping Blogs</h1>
     <p class="page-subtitle" style="max-width:42rem;">Editorial insights, policy updates, and awareness campaigns designed to foster a culture of clean sport.</p>
   </div>
-  {% if user.is_authenticated %}
-  <a href="{% url 'create_blog' %}" class="btn-primary" style="padding:0.8rem 1.75rem;font-size:0.9rem;white-space:nowrap;display:inline-flex;align-items:center;gap:0.5rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-    Write a Blog
-  </a>
-  {% endif %}
+
 </div>
 
 <!-- Filter Tabs -->
@@ -93,12 +88,32 @@
     </div>
 
     {% else %}
-    <div class="empty-state">
-      <div class="empty-icon-large">📭</div>
-      <h3 class="empty-title">No Blogs Yet</h3>
-      <p class="empty-text" style="margin-bottom:1.5rem;">Be the first to share your anti-doping knowledge!</p>
+    <div class="empty-state" style="border:none;background:transparent;padding:3rem 1rem;">
+      <div class="empty-icon-large" style="font-size:3rem;margin-bottom:1rem;">📭</div>
+      <h3 class="empty-title" style="font-size:1.4rem;margin-bottom:0.4rem;">No Blogs Yet</h3>
+      <p class="empty-text" style="margin-bottom:2.5rem;font-size:0.95rem;">Be the first to share your anti-doping knowledge!</p>
       {% if user.is_authenticated %}
-      <a href="{% url 'create_blog' %}" class="btn-primary" style="padding:0.8rem 2rem;font-size:1rem;">Write the First Blog</a>
+      <!-- Glass 3D Blog Button -->
+      <div class="glass-btn-3d-wrapper">
+        <a href="{% url 'create_blog' %}" class="glass-btn-3d" id="glassBlogBtn">
+          <span class="glass-btn-3d-bg"></span>
+          <span class="glass-btn-3d-shimmer"></span>
+          <span class="glass-btn-3d-content">
+            <span class="glass-btn-3d-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </span>
+            <span class="glass-btn-3d-text">Write a Blog</span>
+          </span>
+          <span class="glass-btn-3d-glow"></span>
+        </a>
+        <!-- Floating 3D particles around the button -->
+        <div class="glass-btn-particle p1"></div>
+        <div class="glass-btn-particle p2"></div>
+        <div class="glass-btn-particle p3"></div>
+        <div class="glass-btn-particle p4"></div>
+      </div>
       {% else %}
       <a href="/accounts/login/" class="btn-secondary" style="padding:0.8rem 2rem;font-size:1rem;">Login to Write</a>
       {% endif %}
@@ -152,6 +167,352 @@
 .blog-card > * {
   transform: translateZ(20px);
 }
+
+/* ================================================================
+   GLASS 3D BLOG BUTTON — Premium Glassmorphism
+   ================================================================ */
+
+/* Wrapper for relative positioning of particles */
+.glass-btn-3d-wrapper {
+  position: relative;
+  display: inline-block;
+  perspective: 800px;
+}
+
+/* The main glass button */
+.glass-btn-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem 2.8rem;
+  border-radius: 18px;
+  text-decoration: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg) translateZ(0);
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: glassBtnFloat 4s ease-in-out infinite;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Glassmorphic background layer */
+.glass-btn-3d-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(246, 215, 247, 0.55) 0%,
+    rgba(232, 199, 233, 0.40) 30%,
+    rgba(255, 255, 255, 0.30) 60%,
+    rgba(212, 239, 68, 0.18) 100%
+  );
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 8px 32px rgba(246, 215, 247, 0.30),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+  z-index: 0;
+  transition: box-shadow 0.45s ease, border-color 0.45s ease;
+}
+
+/* Animated shimmer/reflection sweep */
+.glass-btn-3d-shimmer {
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 45%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.5) 55%,
+    transparent 70%
+  );
+  transform: skewX(-20deg);
+  z-index: 1;
+  pointer-events: none;
+  animation: shimmerSweep 3.5s ease-in-out infinite;
+}
+
+/* Button content (icon + text) */
+.glass-btn-3d-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  transform: translateZ(30px);
+}
+
+.glass-btn-3d-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  color: #5a2a5a;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.glass-btn-3d-icon svg {
+  display: block;
+}
+
+.glass-btn-3d-text {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #3a1a3a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Glow aura behind button */
+.glass-btn-3d-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 24px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(246, 215, 247, 0.35) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+  animation: pulseAura 3s ease-in-out infinite;
+}
+
+/* Hover state — 3D tilt + amplified glow */
+.glass-btn-3d:hover {
+  transform: rotateX(-6deg) rotateY(6deg) translateZ(12px) scale(1.04);
+  animation-play-state: paused;
+}
+
+.glass-btn-3d:hover .glass-btn-3d-bg {
+  box-shadow:
+    0 16px 48px rgba(246, 215, 247, 0.45),
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.glass-btn-3d:hover .glass-btn-3d-icon {
+  transform: scale(1.1) rotate(-8deg);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.glass-btn-3d:hover .glass-btn-3d-glow {
+  opacity: 1;
+}
+
+/* Active/press state — push in */
+.glass-btn-3d:active {
+  transform: rotateX(-2deg) rotateY(2deg) translateZ(4px) scale(0.98);
+}
+
+.glass-btn-3d:active .glass-btn-3d-bg {
+  box-shadow:
+    0 4px 16px rgba(246, 215, 247, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Floating 3D particles */
+.glass-btn-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.glass-btn-particle.p1 {
+  width: 10px; height: 10px;
+  background: radial-gradient(circle, rgba(246,215,247,0.7), rgba(246,215,247,0.1));
+  top: -18px; right: 20%;
+  animation: particleOrbit1 5s ease-in-out infinite;
+}
+
+.glass-btn-particle.p2 {
+  width: 7px; height: 7px;
+  background: radial-gradient(circle, rgba(212,239,68,0.6), rgba(212,239,68,0.1));
+  bottom: -14px; left: 25%;
+  animation: particleOrbit2 6s ease-in-out infinite 0.5s;
+}
+
+.glass-btn-particle.p3 {
+  width: 5px; height: 5px;
+  background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+  top: 40%; right: -12px;
+  animation: particleOrbit3 4.5s ease-in-out infinite 1s;
+}
+
+.glass-btn-particle.p4 {
+  width: 8px; height: 8px;
+  background: radial-gradient(circle, rgba(246,215,247,0.5), transparent);
+  top: 30%; left: -10px;
+  animation: particleOrbit4 5.5s ease-in-out infinite 1.5s;
+}
+
+/* ── Keyframe Animations ── */
+@keyframes glassBtnFloat {
+  0%, 100% { transform: rotateX(0deg) rotateY(0deg) translateZ(0) translateY(0); }
+  25%      { transform: rotateX(2deg) rotateY(-1.5deg) translateZ(4px) translateY(-5px); }
+  50%      { transform: rotateX(-1deg) rotateY(2deg) translateZ(6px) translateY(-8px); }
+  75%      { transform: rotateX(1.5deg) rotateY(-0.5deg) translateZ(3px) translateY(-4px); }
+}
+
+@keyframes shimmerSweep {
+  0%   { left: -75%; opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { left: 125%; opacity: 1; }
+  55%  { opacity: 0; }
+  100% { left: 125%; opacity: 0; }
+}
+
+@keyframes pulseAura {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 0.8; transform: scale(1.06); }
+}
+
+@keyframes particleOrbit1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  25%      { transform: translate(8px, -10px) scale(1.2); opacity: 1; }
+  50%      { transform: translate(-4px, -16px) scale(0.9); opacity: 0.4; }
+  75%      { transform: translate(12px, -6px) scale(1.1); opacity: 0.8; }
+}
+
+@keyframes particleOrbit2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  33%      { transform: translate(-10px, 8px) scale(1.3); opacity: 0.9; }
+  66%      { transform: translate(6px, 12px) scale(0.8); opacity: 0.3; }
+}
+
+@keyframes particleOrbit3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  40%      { transform: translate(10px, -6px) scale(1.4); opacity: 1; }
+  80%      { transform: translate(4px, 8px) scale(0.7); opacity: 0.3; }
+}
+
+@keyframes particleOrbit4 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  30%      { transform: translate(-8px, -8px) scale(1.2); opacity: 0.9; }
+  70%      { transform: translate(-12px, 6px) scale(0.8); opacity: 0.3; }
+}
+
+/* ── Dark Mode Adaptation ── */
+html.dark .glass-btn-3d-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(246, 215, 247, 0.18) 0%,
+    rgba(232, 199, 233, 0.12) 30%,
+    rgba(255, 255, 255, 0.06) 60%,
+    rgba(212, 239, 68, 0.08) 100%
+  );
+  border-color: rgba(246, 215, 247, 0.22);
+  box-shadow:
+    0 8px 32px rgba(246, 215, 247, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+html.dark .glass-btn-3d-text {
+  color: #F6D7F7;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .glass-btn-3d-icon {
+  background: rgba(246, 215, 247, 0.15);
+  border-color: rgba(246, 215, 247, 0.25);
+  color: #F6D7F7;
+}
+
+html.dark .glass-btn-3d-glow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(246, 215, 247, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+html.dark .glass-btn-3d:hover .glass-btn-3d-bg {
+  box-shadow:
+    0 16px 48px rgba(246, 215, 247, 0.18),
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  border-color: rgba(246, 215, 247, 0.35);
+}
+
+html.dark .glass-btn-3d-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(246, 215, 247, 0.2) 45%,
+    rgba(246, 215, 247, 0.35) 50%,
+    rgba(246, 215, 247, 0.2) 55%,
+    transparent 70%
+  );
+}
+
+/* ── Responsive Adjustments ── */
+@media (max-width: 480px) {
+  .glass-btn-3d {
+    padding: 0.9rem 2rem;
+  }
+  .glass-btn-3d-text {
+    font-size: 0.92rem;
+  }
+  .glass-btn-3d-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .glass-btn-3d-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}
 </style>
+
+<script>
+// Interactive 3D tilt on mouse movement
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('glassBlogBtn');
+  if (!btn) return;
+
+  btn.addEventListener('mousemove', function(e) {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateY = ((x - centerX) / centerX) * 12;   // max 12deg
+    const rotateX = ((centerY - y) / centerY) * 8;     // max 8deg
+    btn.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px) scale(1.04)`;
+    btn.style.animationPlayState = 'paused';
+  });
+
+  btn.addEventListener('mouseleave', function() {
+    btn.style.transform = '';
+    btn.style.animationPlayState = '';
+  });
+});
+</script>
 
 {% endblock %}

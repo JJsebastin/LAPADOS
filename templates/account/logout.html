@@ -1,23 +1,27 @@
-{% extends "base.html" %}
+{% extends "account/auth_base.html" %}
 
 {% block title %}Sign Out — LAPDOS{% endblock %}
 
 {% block content %}
 <div class="auth-wrapper">
   <div class="auth-card" style="text-align: center;">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">👋</div>
+    <div class="auth-brand">
+      <span class="auth-brand-dot"></span>LAPA<span style="color:#8a4a8a;">DOS</span>
+    </div>
+    
+    <div style="font-size: 3rem; margin-bottom: 1rem; margin-top: 1rem;">👋</div>
     <h1 class="auth-title">Sign Out</h1>
     <p class="auth-subtitle">Are you sure you want to sign out of LAPDOS?</p>
 
-    <form method="POST" action="{% url 'account_logout' %}" class="auth-form" style="margin-top: 2rem;">
+    <form method="POST" action="{% url 'account_logout' %}" style="margin-top: 2rem;">
       {% csrf_token %}
       {% if redirect_field_value %}
       <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
       {% endif %}
       
-      <button type="submit" class="btn-primary btn-submit" style="background-color: var(--red, #E63946); width: 100%; margin-bottom: 1rem; border: none;">Yes, Sign Out</button>
+      <button type="submit" class="btn-submit" style="background-color: #E63946; margin-bottom: 1rem;">Yes, Sign Out</button>
       
-      <a href="/" class="btn-secondary" style="display: block; width: 100%; text-align: center; padding: 0.75rem; border-radius: 8px; box-sizing: border-box; text-decoration: none;">Cancel</a>
+      <a href="/" style="display: block; width: 100%; text-align: center; padding: 0.95rem; border-radius: 12px; background: rgba(26,26,26,0.05); color: #1A1A1A; font-weight: 700; text-decoration: none; border: 1.5px solid rgba(26,26,26,0.1); transition: background 0.2s;">Cancel</a>
     </form>
   </div>
 </div>

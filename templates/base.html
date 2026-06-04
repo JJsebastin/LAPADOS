@@ -12,11 +12,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=30">
+  <link rel="stylesheet" href="{% static 'css/lapdos.css' %}?v=33">
   
   {% block extra_head %}{% endblock %}
 </head>
 <body class="layout-body">
+
+  <!-- Ambient orbs for 3D glassy effect -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
   <!-- Three.js Ambient Background Canvas -->
   <canvas id="bg-canvas"></canvas>
@@ -25,16 +30,34 @@
   <aside id="sidebar" class="sidebar">
     <!-- Brand -->
     <div class="sidebar-header">
-      <a href="/dashboard/" class="brand-link">
-        <span class="brand-full">LAPA<span class="text-brand-green">DOS</span></span>
-        <span class="brand-short">L<span class="text-brand-green">D</span></span>
+      <a href="/dashboard/" class="brand-link-3d" id="lapados-logo-link">
+        <span class="brand-logo-3d brand-full" id="lapados-logo-text">LAPA<span class="brand-logo-pink">DOS</span></span>
+        <span class="brand-logo-3d brand-short" id="lapados-logo-short">L<span class="brand-logo-pink">D</span></span>
       </a>
     </div>
 
     <!-- Profile Summary (Sidebar) -->
     {% if user.is_authenticated %}
     <div class="sidebar-profile">
-      <div class="sidebar-avatar">{{ user.username|first|upper }}</div>
+      <!-- 3D Profile Avatar with spinning pink ring -->
+      <div class="sidebar-avatar-wrap" id="sidebarAvatarWrap">
+        <svg class="avatar-ring-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#e879f9;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#f43f5e;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <!-- Outer spinning dashed ring -->
+          <circle class="avatar-ring-outer" cx="40" cy="40" r="36" fill="none" stroke="url(#ringGrad)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="18 8"/>
+          <!-- Inner glow ring -->
+          <circle class="avatar-ring-inner" cx="40" cy="40" r="31" fill="none" stroke="rgba(232,121,249,0.35)" stroke-width="1.5"/>
+        </svg>
+        <div class="sidebar-avatar-inner">{{ user.username|first|upper }}</div>
+        <!-- Neon pink glow dot -->
+        <span class="avatar-online-dot"></span>
+      </div>
       <h3 class="sidebar-name">{{ user.username }}</h3>
       <p class="sidebar-role">New York, USA</p>
     </div>
@@ -135,6 +158,62 @@
   <script src="{% static 'js/lapdos.js' %}?v=21"></script>
   <!-- 3D Ambient Background (GPU-optimised) -->
   <script src="{% static 'js/lapdos-3d.js' %}?v=5"></script>
+
+  <!-- 3D Logo & Avatar Effect JS -->
+  <script>
+  (function() {
+    // ── LAPADOS 3D Logo: mouse-parallax on the text-shadow depth layers ──
+    const logo = document.getElementById('lapados-logo-text');
+    const logoShort = document.getElementById('lapados-logo-short');
+    const sidebar = document.getElementById('sidebar');
+
+    function makeShadow(dx, dy) {
+      let shadow = '';
+      const steps = 6;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        // Interpolate from near-black (#1a1a1a) to hot-pink (#e879f9)
+        const r = Math.round(26 + t * (232 - 26));
+        const g = Math.round(26 + t * (121 - 26));
+        const b = Math.round(26 + t * (249 - 26));
+        shadow += `${dx * i}px ${dy * i}px 0 rgb(${r},${g},${b})`;
+        if (i < steps) shadow += ', ';
+      }
+      shadow += `, 0 ${dy * (steps + 2)}px ${steps * 3}px rgba(232,121,249,0.28)`;
+      return shadow;
+    }
+
+    if (sidebar && logo) {
+      sidebar.addEventListener('mousemove', (e) => {
+        const rect = sidebar.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + 60; // logo area center
+        const dx = ((e.clientX - cx) / rect.width) * 3;
+        const dy = ((e.clientY - cy) / rect.height) * 2;
+        const s = makeShadow(dx, dy);
+        if (logo) logo.style.textShadow = s;
+        if (logoShort) logoShort.style.textShadow = s;
+      });
+      sidebar.addEventListener('mouseleave', () => {
+        const s = makeShadow(1, 1);
+        if (logo) logo.style.textShadow = s;
+        if (logoShort) logoShort.style.textShadow = s;
+      });
+    }
+
+    // ── Sidebar Avatar: entrance scale + ring spin ──
+    const wrap = document.getElementById('sidebarAvatarWrap');
+    if (wrap) {
+      wrap.style.transform = 'scale(0)';
+      wrap.style.opacity = '0';
+      wrap.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease';
+      setTimeout(() => {
+        wrap.style.transform = 'scale(1)';
+        wrap.style.opacity = '1';
+      }, 300);
+    }
+  })();
+  </script>
 
   {% block extra_scripts %}{% endblock %}
 </body>
