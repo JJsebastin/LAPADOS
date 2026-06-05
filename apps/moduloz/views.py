@@ -20,11 +20,6 @@ def dashboard(request):
     from apps.blogs.models import Blog
     recent_blogs = Blog.objects.filter(is_approved=True)[:3]
     
-    # Calculate Streak (dummy implementation for now unless we add real streak logic)
-    streak_days = 0
-    if request.user.is_authenticated:
-        streak_days = QuizAttempt.objects.filter(user=request.user).values('created_at__date').distinct().count()
-
     # Radar Chart Data
     radar_labels = [m.title for m in modules]
     radar_data = []
@@ -38,25 +33,41 @@ def dashboard(request):
     else:
         radar_data = [0] * len(radar_labels)
         
-    # Streak Logic (Last 7 days)
+    # Streak Logic (Last 7 days) — timezone-aware local date
     from datetime import timedelta
     from django.utils import timezone
-    today = timezone.now().date()
+    from django.utils.timezone import localdate
+
+    today = localdate()          # Use local date, not UTC date
     streak_days_list = []
-    
+    consecutive_streak = 0
+
     if request.user.is_authenticated:
-        attempts_dates = set(QuizAttempt.objects.filter(user=request.user).values_list('created_at__date', flat=True))
+        # Get all distinct dates (as local dates) the user attempted a quiz
+        raw_dates = QuizAttempt.objects.filter(user=request.user).values_list('created_at', flat=True)
+        attempts_dates = set()
+        for dt in raw_dates:
+            attempts_dates.add(dt.astimezone(timezone.get_current_timezone()).date())
+
+        # Build last-7-days list
         for i in range(6, -1, -1):
             d = today - timedelta(days=i)
             streak_days_list.append({"date": d, "active": d in attempts_dates})
+
+        # Calculate consecutive streak (today backwards)
+        check = today
+        while check in attempts_dates:
+            consecutive_streak += 1
+            check -= timedelta(days=1)
     else:
         streak_days_list = [{"date": today - timedelta(days=i), "active": False} for i in range(6, -1, -1)]
+        consecutive_streak = 0
 
     # icon = static image filename in static/img/
     stats = [
         ("cubes.png", modules.count() or "5", "Modules"),
         ("quiz.png", "17+", "Quiz Questions"),
-        ("torch.png", f"{streak_days} Days", "Streak"),
+        ("torch.png", f"{consecutive_streak} Day{'s' if consecutive_streak != 1 else ''}", "Streak"),
     ]
     return render(request, "moduloz/dashboard.html", {
         "modules": modules,
@@ -65,6 +76,7 @@ def dashboard(request):
         "radar_labels": json.dumps(radar_labels),
         "radar_data": json.dumps(radar_data),
         "streak_days_list": streak_days_list,
+        "streak_days": consecutive_streak,
     })
 
 

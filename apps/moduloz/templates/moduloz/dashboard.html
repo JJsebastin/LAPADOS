@@ -7,12 +7,20 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ── Dashboard page-specific overrides ── */
-.dash-hero-wrap {
-  display: flex;
-  flex-direction: column;
+
+/* Layout grid */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  margin-top: 2rem;          /* <-- key: nice gap below hero */
 }
+@media (min-width: 1024px) {
+  .dashboard-layout { grid-template-columns: 1fr 320px; }
+}
+
+.dashboard-main    { display: flex; flex-direction: column; gap: 1.5rem; }
+.dashboard-sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
 
 /* Streak card within section-card-dark */
 .streak-badge {
@@ -26,6 +34,26 @@
 
 /* Dark mode radar chart ticks */
 html.dark #radarChart { filter: brightness(0.85); }
+
+/* Streak active day glow */
+.streak-day.active {
+  box-shadow: 0 0 0 3px rgba(246,215,247,0.45), 0 4px 12px rgba(212,160,212,0.35);
+}
+
+/* Streak summary line */
+.streak-summary {
+  margin: 0.85rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.streak-count {
+  font-weight: 800;
+  color: var(--accent-dark);
+  font-size: 0.88rem;
+}
 </style>
 {% endblock %}
 
@@ -71,7 +99,7 @@ html.dark #radarChart { filter: brightness(0.85); }
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     MAIN DASHBOARD LAYOUT
+     MAIN DASHBOARD LAYOUT  (margin-top provided by .dashboard-layout CSS)
 ════════════════════════════════════════════════════════ -->
 <div class="dashboard-layout">
 
@@ -90,13 +118,17 @@ html.dark #radarChart { filter: brightness(0.85); }
       </div>
       <div class="streak-container">
         {% for day in streak_days_list %}
-        <div class="streak-day {% if day.active %}active{% endif %}" title="{{ day.date }}">
+        <div class="streak-day {% if day.active %}active{% endif %}" title="{{ day.date|date:'D, M j' }}">
           {{ day.date|date:"D"|slice:":1" }}
         </div>
         {% endfor %}
       </div>
-      <p style="margin:0.85rem 0 0;">
-        {% if user.is_authenticated %}Keep taking quizzes to maintain your streak!{% else %}Log in to track your streak.{% endif %}
+      <p class="streak-summary">
+        {% if user.is_authenticated %}
+          🔥 <span class="streak-count">{{ streak_days }} day{{ streak_days|pluralize }}</span> streak &mdash; Keep taking quizzes!
+        {% else %}
+          Log in to track your streak.
+        {% endif %}
       </p>
     </div>
 

@@ -98,7 +98,15 @@ GROQ_API_KEY = env("GROQ_API_KEY")
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
 
+
+# Internationalisation & Timezones
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "Asia/Kolkata"    # IST (+5:30) — change to your timezone if deploying elsewhere
+USE_I18N = True
+USE_TZ = True                 # Store datetimes as UTC in the DB; display in local TZ
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # CKEditor Configuration
 CKEDITOR_CONFIGS = {
