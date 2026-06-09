@@ -214,7 +214,60 @@ MODULE_LESSONS = {
             },
         },
     ],
-    # Add more module slugs here as needed
+    "the-athlete-biological-passport-abp-2022-updates": [
+        {
+            "title": "What is the ABP?",
+            "tag": "Overview",
+            "body": """<p>The ABP is a digital record of an athlete's biological markers over time. Instead of testing for specific substances, it monitors the <em>effects</em> of doping on the body.</p>
+            <p>The ABP has led to numerous suspensions and is used as standalone evidence without requiring direct detection of a substance.</p>""",
+        },
+        {
+            "title": "ABP Modules (Updated 2022)",
+            "tag": "Core Rules",
+            "body": """<p>The 2022 International Standard for Results Management (ISRM) provided critical redline updates to the ABP framework, strengthening the statistical models used to flag anomalies:</p>
+            <ul>
+              <li><strong>Haematological Module:</strong> Tracks red blood cell parameters to detect blood doping and EPO use. The 2022 updates refined the adaptive model for more accurate flagging.</li>
+              <li><strong>Steroidal Module:</strong> Monitors steroid levels and endogenous steroid profiles in urine.</li>
+              <li><strong>Endocrine Module:</strong> Evaluates markers of growth hormone (GH) doping.</li>
+            </ul>""",
+        },
+        {
+            "title": "The Review Process",
+            "tag": "Process",
+            "body": """<p>If an atypical passport finding (ATPF) is triggered, it is reviewed by an independent panel of three experts.</p>
+            <p>Under the 2022 updates, athletes are given an opportunity to provide medical explanations for the variations before an ADRV is asserted.</p>""",
+        }
+    ],
+    "compliance-the-isccs-framework": [
+        {
+            "title": "What is the ISCCS?",
+            "tag": "Overview",
+            "body": """<p>The International Standard for Code Compliance by Signatories (ISCCS) is the framework WADA uses to ensure all anti-doping organizations globally enforce the WADA code correctly.</p>""",
+        },
+        {
+            "title": "Signatory Obligations",
+            "tag": "Compliance",
+            "body": """<ul>
+              <li><strong>Implementing the Code:</strong> Signatories must draft anti-doping rules that conform strictly to the WADA Code.</li>
+              <li><strong>Testing and Investigations:</strong> They must conduct robust testing and investigations.</li>
+              <li><strong>TUE Management:</strong> Signatories must have a process for granting Therapeutic Use Exemptions (TUEs).</li>
+              <li><strong>Education:</strong> They are required to provide anti-doping education to their athletes.</li>
+            </ul>""",
+        },
+        {
+            "title": "Consequences of Non-Compliance",
+            "tag": "Consequences",
+            "body": """<p>If a signatory (like a National Anti-Doping Organization) is declared non-compliant under the ISCCS:</p>
+            <ul>
+              <li>Their athletes may be barred from competing under their national flag at the Olympic Games.</li>
+              <li>The country may lose the right to host major international sporting events.</li>
+              <li>WADA funding and privileges are suspended.</li>
+            </ul>
+            <div style="background:#1f2937;border-radius:0.75rem;padding:1rem;margin-top:1rem">
+              <strong style="color:#E63946">💡 Insight:</strong> The ISCCS ensures that anti-doping is a global effort and no country can ignore the rules without severe international sporting consequences.
+            </div>""",
+        }
+    ],
 }
 
 DEFAULT_SECTIONS = [

@@ -38,8 +38,8 @@
   </div>
 
   <!-- Quiz Section (hidden initially) -->
-  <div id="quizSection" style="display:none;">
-    <h2 class="quiz-heading">Quiz Time</h2>
+  <div id="quizSection" style="display:none; transform: perspective(1000px) rotateX(5deg) translateY(20px); transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); opacity: 0; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 3rem 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(246,215,247,0.8), 0 10px 20px rgba(143,129,134,0.15);">
+    <h2 class="quiz-heading" style="font-size:2.5rem; font-weight: 900; color: #222; text-transform: uppercase; letter-spacing: -0.05em; margin-bottom: 2rem; text-align: center;">MODULE ASSESSMENT</h2>
     <form id="quizForm">
       {% csrf_token %}
       {% for q in quizzes %}
@@ -86,8 +86,20 @@
 const SUBMIT_URL = "{% url 'submit_quiz' module.slug %}";
 
 function startQuiz() {
-  document.getElementById('contentSection').style.display = 'none';
-  document.getElementById('quizSection').style.display = 'block';
+  const content = document.getElementById('contentSection');
+  const quiz = document.getElementById('quizSection');
+  
+  content.style.opacity = '0';
+  content.style.transition = 'opacity 0.3s ease';
+  
+  setTimeout(() => {
+    content.style.display = 'none';
+    quiz.style.display = 'block';
+    // Trigger reflow
+    void quiz.offsetWidth;
+    quiz.style.opacity = '1';
+    quiz.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0)';
+  }, 300);
 }
 
 async function submitQuiz() {
