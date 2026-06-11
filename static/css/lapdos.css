@@ -1046,17 +1046,112 @@ html.dark .dark-mode-icon-dark  { display: inline; }
 /* ================================================================
    ALERTS / MESSAGES
    ================================================================ */
-.messages-container { margin-bottom: 1.5rem; }
-.alert {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 1rem 1.25rem;
-  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem;
-  font-size: 0.9rem; font-weight: 600;
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
 }
-.alert-icon { font-size: 1.1rem; }
-.alert.alert-error   { background: #fff0f0; border-color: rgba(231,76,60,0.3); color: #c0392b; }
-.alert.alert-warning { background: #fffbf0; border-color: rgba(230,126,34,0.3); color: #92610d; }
-.alert.alert-success { background: #f0fff5; border-color: rgba(39,174,96,0.3);  color: #1d7a45; }
+
+.toast-alert {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  min-width: 300px;
+  max-width: 400px;
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
+}
+
+html.dark .toast-alert {
+  background: rgba(22, 15, 22, 0.85);
+  border-color: rgba(246, 215, 247, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.animate-toast-in {
+  animation: toastPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes toastPopIn {
+  0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.toast-success .toast-icon { background: rgba(39, 174, 96, 0.15); color: #27AE60; }
+.toast-error .toast-icon { background: rgba(231, 76, 60, 0.15); color: #E74C3C; }
+.toast-warning .toast-icon { background: rgba(230, 126, 34, 0.15); color: #E67E22; }
+
+html.dark .toast-success .toast-icon { background: rgba(39, 174, 96, 0.2); color: #2ECC71; }
+html.dark .toast-error .toast-icon { background: rgba(231, 76, 60, 0.2); color: #E74C3C; }
+html.dark .toast-warning .toast-icon { background: rgba(230, 126, 34, 0.2); color: #F39C12; }
+
+.toast-message {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+  color: #1A1A1A;
+}
+
+html.dark .toast-message {
+  color: var(--text-main);
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.toast-close:hover {
+  color: #333;
+  transform: scale(1.1);
+}
+
+html.dark .toast-close:hover {
+  color: #fff;
+}
 
 /* ================================================================
    AUTH PAGES
@@ -1398,7 +1493,6 @@ html.dark .btn-hero-primary:hover { background: var(--accent-dark); }
 html.dark .btn-hero-secondary { color: var(--text-main); border-bottom-color: var(--text-main); }
 html.dark .form-input    { background: var(--surface-alt); border-color: var(--border); color: var(--text-main); }
 html.dark .search-input  { background: var(--surface-alt); border-color: var(--border); color: var(--text-main); }
-html.dark .alert         { background: var(--surface-alt); border-color: var(--border); color: var(--text-main); }
 html.dark .hero-card { background: linear-gradient(135deg, rgba(22,15,22,0.92) 0%, rgba(40,20,40,0.7) 100%); border-color: rgba(246,215,247,0.12); }
 html.dark .hero-headline { color: var(--text-main); }
 html.dark .hero-badge    { background: rgba(246,215,247,0.08); border-color: rgba(246,215,247,0.15); color: var(--text-main); }
