@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load blog_filters %}
+{% load static %}
+
+{% block title %}{{ article.title }} — News & Updates{% endblock %}
+{% block nav_news %}active{% endblock %}
+
+{% block content %}
+<div class="module-detail-wrap animate-fade-in">
+  <!-- Breadcrumb -->
+  <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;">
+    <a href="{% url 'news:list' %}" class="back-link" style="margin-bottom:0;">← All News</a>
+    <span style="color:var(--text-muted);font-size:0.8rem;">/</span>
+    <span style="color:var(--text-muted);font-size:0.8rem;">{{ article.title|truncatewords:6 }}</span>
+  </div>
+
+  <!-- Type Badge + Date -->
+  <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+    <span class="count-badge" style="background: var(--accent); color: #1a1a1a;">
+      {{ article.source_name|default:"News" }}
+    </span>
+    <span style="font-size:0.8rem;color:var(--text-muted);">{{ article.published_date|date:"F d, Y" }}</span>
+  </div>
+
+  <!-- Title -->
+  <h1 style="font-size:2.2rem;font-weight:800;color:var(--text-main);margin:0 0 1.25rem;line-height:1.2;">{{ article.title }}</h1>
+
+  <!-- Cover Image -->
+  {% if article.image %}
+  <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;border:1px solid var(--border);">
+    <img src="{{ article.image.url }}" alt="{{ article.title }}" style="width:100%;max-height:420px;object-fit:cover;display:block;"/>
+  </div>
+  {% endif %}
+
+  <!-- Article Content -->
+  <div class="module-content-card markdown-body" style="margin-bottom:1.5rem;line-height:1.85;font-size:1rem;color:var(--text-main);">
+    {{ article.content|markdown }}
+  </div>
+
+  <!-- Original Source Link -->
+  {% if article.source_url %}
+  <div style="margin-bottom: 2rem; padding: 1rem; background: var(--surface-alt); border-radius: var(--radius-md); border-left: 4px solid var(--accent);">
+    <strong style="color: var(--text-main);">Original Source:</strong> 
+    <a href="{{ article.source_url }}" target="_blank" rel="noopener noreferrer" style="color: #2F80ED; text-decoration: underline;">
+      Read full article on {{ article.source_name|default:"external site" }}
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- Back Button -->
+  <a href="{% url 'news:list' %}" class="btn-write" style="display:inline-flex;">
+    ← Back to News
+  </a>
+</div>
+{% endblock %}

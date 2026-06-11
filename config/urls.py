@@ -10,6 +10,6 @@ urlpatterns = [
     path("", landing, name="landing"),                    # Public landing page (/ root)
     path("", include("apps.moduloz.urls")),               # Root URLs handled by moduloz app
     path("blogs/", include("apps.blogs.urls")),
-    path("ai/", include("apps.ai_assistant.urls")),
+    path("news/", include("apps.news.urls")),
     path("accounts/profile/", include("apps.accounts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

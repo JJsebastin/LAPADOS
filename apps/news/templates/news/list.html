@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Latest News & Updates — LAPADOS{% endblock %}
+{% block nav_news %}active{% endblock %}
+
+{% block content %}
+<div class="page-header animate-fade-in">
+  <h1 class="page-title">Latest Updates</h1>
+  <p class="page-subtitle">Real-time news and infos relevant to anti-doping, healthcare, and sports.</p>
+</div>
+
+{% if articles %}
+<div class="blog-grid animate-slide-up" style="animation-delay: 0.1s;">
+  {% for article in articles %}
+  <a href="{% url 'news:detail' article.pk %}" class="blog-card" style="text-decoration: none;">
+    <div class="blog-image-wrapper">
+      {% if article.image %}
+      <img src="{{ article.image.url }}" alt="{{ article.title }}" class="blog-image" loading="lazy">
+      {% else %}
+      <div class="blog-image-placeholder">📰</div>
+      {% endif %}
+      <div class="blog-badge-wrapper">
+        <span class="count-badge" style="background: var(--accent); color: #1a1a1a;">
+          {{ article.source_name|default:"News" }}
+        </span>
+      </div>
+    </div>
+    <div class="blog-content">
+      <div class="blog-meta">{{ article.published_date|date:"F j, Y" }}</div>
+      <h3 class="blog-title">{{ article.title }}</h3>
+      <p class="blog-excerpt">
+        <!-- We use truncatewords for markdown to show just the text without tags if possible -->
+        {{ article.content|striptags|truncatewords:20 }}
+      </p>
+      <div class="blog-footer">
+        <span class="btn-check" style="margin-left:auto;">Read More →</span>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state animate-fade-in" style="margin-top: 2rem;">
+  <div class="empty-state-icon">📰</div>
+  <p>No news updates found.</p>
+  {% if user.is_staff %}
+  <a href="{% url 'admin:news_newsarticle_add' %}" class="btn-write" style="margin-top: 1rem; display: inline-flex;">+ Add News Article</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

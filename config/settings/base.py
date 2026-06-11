@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.moduloz",
     "apps.blogs",
-    "apps.ai_assistant",
+    "apps.news",
 ]
 
 MIDDLEWARE = [
