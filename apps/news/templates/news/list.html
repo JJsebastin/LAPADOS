@@ -4,49 +4,586 @@
 {% block title %}Latest News & Updates — LAPADOS{% endblock %}
 {% block nav_news %}active{% endblock %}
 
+{% block extra_head %}
+<style>
+  /* ── News Page Styles ─────────────────────────────────── */
+
+  /* Tab Navigation */
+  .news-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .news-tab {
+    padding: 0.6rem 1.4rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: 1.5px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .news-tab:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(232, 121, 249, 0.08);
+    transform: translateY(-1px);
+  }
+  .news-tab.active {
+    background: linear-gradient(135deg, #e879f9, #f43f5e);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 20px rgba(232, 121, 249, 0.35);
+  }
+  .news-tab-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.5;
+  }
+  .news-tab.active .news-tab-dot {
+    background: #fff;
+    opacity: 1;
+    animation: pulse-dot 2s ease infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.6); opacity: 0.5; }
+  }
+
+  /* Section Header */
+  .news-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .news-section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .news-section-icon.doping { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .news-section-icon.sports { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  .news-section-icon.fitness { background: linear-gradient(135deg, #22c55e, #16a34a); }
+
+  .news-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+  }
+  .news-section-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .news-live-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .news-live-dot {
+    width: 7px;
+    height: 7px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease infinite;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  }
+
+  /* News Card Grid */
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Individual News Card */
+  .news-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 16px);
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .news-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(232, 121, 249, 0.06), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .news-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(232, 121, 249, 0.35);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 0 30px rgba(232, 121, 249, 0.1);
+  }
+  .news-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Thumbnail */
+  .news-thumb-wrap {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background: var(--surface-alt);
+  }
+  .news-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .news-card:hover .news-thumb-wrap img {
+    transform: scale(1.05);
+  }
+  .news-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    opacity: 0.3;
+    background: linear-gradient(135deg, var(--surface-alt), var(--card-bg));
+  }
+  .news-source-chip {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 100px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2;
+  }
+
+  /* Card Body */
+  .news-card-body {
+    padding: 1.15rem 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+  .news-card-date {
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .news-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-card-snippet {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+  .news-card-footer {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .news-card-source {
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: var(--accent, #e879f9);
+  }
+  .news-card-arrow {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: all 0.25s ease;
+  }
+  .news-card:hover .news-card-arrow {
+    color: var(--accent, #e879f9);
+    transform: translateX(3px);
+  }
+
+  /* Tab Content */
+  .news-tab-content {
+    display: none;
+    animation: fadeSlideUp 0.4s ease;
+  }
+  .news-tab-content.active {
+    display: block;
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Local Articles Section */
+  .news-local-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+  }
+
+  /* API Not Configured Notice */
+  .news-api-notice {
+    background: linear-gradient(135deg, rgba(232, 121, 249, 0.08), rgba(244, 63, 94, 0.06));
+    border: 1px solid rgba(232, 121, 249, 0.2);
+    border-radius: var(--radius-lg, 16px);
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .news-api-notice-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .news-api-notice h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.5rem;
+  }
+  .news-api-notice p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .news-api-notice code {
+    background: rgba(232, 121, 249, 0.15);
+    color: var(--accent, #e879f9);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* Empty state for a category */
+  .news-empty-category {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  /* ── Force editorial cards visible (override GSAP scroll-trigger opacity) */
+  .news-editorial-card {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+    .news-tabs {
+      gap: 0.35rem;
+    }
+    .news-tab {
+      padding: 0.5rem 1rem;
+      font-size: 0.78rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-header animate-fade-in">
   <h1 class="page-title">Latest Updates</h1>
-  <p class="page-subtitle">Real-time news and infos relevant to anti-doping, healthcare, and sports.</p>
+  <p class="page-subtitle">Real-time news and intel on anti-doping, sports, and fitness.</p>
 </div>
 
-{% if articles %}
-<div class="blog-grid animate-slide-up" style="animation-delay: 0.1s;">
-  {% for article in articles %}
-  <a href="{% url 'news:detail' article.pk %}" class="blog-card" style="text-decoration: none;">
-    <div class="blog-image-wrapper">
-      {% if article.image %}
-      <img src="{{ article.image.url }}" alt="{{ article.title }}" class="blog-image" loading="lazy">
-      {% else %}
-      <div class="blog-image-placeholder">📰</div>
-      {% endif %}
-      <div class="blog-badge-wrapper">
-        <span class="count-badge" style="background: var(--accent); color: #1a1a1a;">
-          {{ article.source_name|default:"News" }}
-        </span>
-      </div>
-    </div>
-    <div class="blog-content">
-      <div class="blog-meta">{{ article.published_date|date:"F j, Y" }}</div>
-      <h3 class="blog-title">{{ article.title }}</h3>
-      <p class="blog-excerpt">
-        <!-- We use truncatewords for markdown to show just the text without tags if possible -->
-        {{ article.content|striptags|truncatewords:20 }}
-      </p>
-      <div class="blog-footer">
-        <span class="btn-check" style="margin-left:auto;">Read More →</span>
-      </div>
-    </div>
-  </a>
-  {% endfor %}
+{% if not api_configured %}
+<!-- API Not Configured Banner -->
+<div class="news-api-notice animate-fade-in">
+  <div class="news-api-notice-icon">📡</div>
+  <h3>Live News Feed Not Connected</h3>
+  <p>
+    Add your SerpAPI key in <code>.env</code> as <code>SERPAPI_KEY=your_key</code> to enable
+    live Google News. Get a key at
+    <a href="https://serpapi.com" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: underline;">serpapi.com</a>
+  </p>
 </div>
-{% else %}
+{% endif %}
+
+{% if api_configured and anti_doping_news or sports_news or fitness_news %}
+<!-- ── Tab Navigation ────────────────────────────────── -->
+<div class="news-tabs animate-fade-in" style="animation-delay: 0.05s;" id="newsTabs">
+  <a href="?tab=anti_doping" class="news-tab {% if active_tab == 'anti_doping' %}active{% endif %}" data-tab="anti_doping">
+    <span class="news-tab-dot"></span> Anti-Doping
+  </a>
+  <a href="?tab=sports" class="news-tab {% if active_tab == 'sports' %}active{% endif %}" data-tab="sports">
+    <span class="news-tab-dot"></span> Sports
+  </a>
+  <a href="?tab=fitness" class="news-tab {% if active_tab == 'fitness' %}active{% endif %}" data-tab="fitness">
+    <span class="news-tab-dot"></span> Fitness & Bodybuilding
+  </a>
+</div>
+
+<!-- ── Anti-Doping Tab ───────────────────────────────── -->
+<div class="news-tab-content {% if active_tab == 'anti_doping' %}active{% endif %}" id="tab-anti_doping">
+  <div class="news-section-header">
+    <div class="news-section-icon doping">🛡️</div>
+    <div>
+      <h2 class="news-section-title">Anti-Doping & WADA</h2>
+      <p class="news-section-subtitle">Latest doping cases, regulations & policy updates</p>
+    </div>
+    <div class="news-live-badge"><span class="news-live-dot"></span> LIVE</div>
+  </div>
+
+  {% if anti_doping_news %}
+  <div class="news-grid">
+    {% for item in anti_doping_news %}
+    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="news-card animate-slide-up" style="animation-delay: {{ forloop.counter0|divisibleby:1 }}s; text-decoration:none;">
+      <div class="news-thumb-wrap">
+        {% if item.thumbnail %}
+        <img src="{{ item.thumbnail }}" alt="{{ item.title }}" loading="lazy">
+        {% else %}
+        <div class="news-thumb-placeholder">🛡️</div>
+        {% endif %}
+        <span class="news-source-chip">{{ item.source }}</span>
+      </div>
+      <div class="news-card-body">
+        <span class="news-card-date">{{ item.date }}</span>
+        <h3 class="news-card-title">{{ item.title }}</h3>
+        <p class="news-card-snippet">{{ item.snippet }}</p>
+        <div class="news-card-footer">
+          <span class="news-card-source">{{ item.source }}</span>
+          <span class="news-card-arrow">→</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="news-empty-category">No anti-doping news available right now.</div>
+  {% endif %}
+</div>
+
+<!-- ── Sports Tab ─────────────────────────────────────── -->
+<div class="news-tab-content {% if active_tab == 'sports' %}active{% endif %}" id="tab-sports">
+  <div class="news-section-header">
+    <div class="news-section-icon sports">⚽</div>
+    <div>
+      <h2 class="news-section-title">Sports Updates</h2>
+      <p class="news-section-subtitle">World athletics, Olympics & major events</p>
+    </div>
+    <div class="news-live-badge"><span class="news-live-dot"></span> LIVE</div>
+  </div>
+
+  {% if sports_news %}
+  <div class="news-grid">
+    {% for item in sports_news %}
+    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="news-card animate-slide-up" style="text-decoration:none;">
+      <div class="news-thumb-wrap">
+        {% if item.thumbnail %}
+        <img src="{{ item.thumbnail }}" alt="{{ item.title }}" loading="lazy">
+        {% else %}
+        <div class="news-thumb-placeholder">⚽</div>
+        {% endif %}
+        <span class="news-source-chip">{{ item.source }}</span>
+      </div>
+      <div class="news-card-body">
+        <span class="news-card-date">{{ item.date }}</span>
+        <h3 class="news-card-title">{{ item.title }}</h3>
+        <p class="news-card-snippet">{{ item.snippet }}</p>
+        <div class="news-card-footer">
+          <span class="news-card-source">{{ item.source }}</span>
+          <span class="news-card-arrow">→</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="news-empty-category">No sports news available right now.</div>
+  {% endif %}
+</div>
+
+<!-- ── Fitness & Bodybuilding Tab ─────────────────────── -->
+<div class="news-tab-content {% if active_tab == 'fitness' %}active{% endif %}" id="tab-fitness">
+  <div class="news-section-header">
+    <div class="news-section-icon fitness">💪</div>
+    <div>
+      <h2 class="news-section-title">Fitness & Bodybuilding</h2>
+      <p class="news-section-subtitle">Training, nutrition & bodybuilding news</p>
+    </div>
+    <div class="news-live-badge"><span class="news-live-dot"></span> LIVE</div>
+  </div>
+
+  {% if fitness_news %}
+  <div class="news-grid">
+    {% for item in fitness_news %}
+    <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="news-card animate-slide-up" style="text-decoration:none;">
+      <div class="news-thumb-wrap">
+        {% if item.thumbnail %}
+        <img src="{{ item.thumbnail }}" alt="{{ item.title }}" loading="lazy">
+        {% else %}
+        <div class="news-thumb-placeholder">💪</div>
+        {% endif %}
+        <span class="news-source-chip">{{ item.source }}</span>
+      </div>
+      <div class="news-card-body">
+        <span class="news-card-date">{{ item.date }}</span>
+        <h3 class="news-card-title">{{ item.title }}</h3>
+        <p class="news-card-snippet">{{ item.snippet }}</p>
+        <div class="news-card-footer">
+          <span class="news-card-source">{{ item.source }}</span>
+          <span class="news-card-arrow">→</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="news-empty-category">No fitness news available right now.</div>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- ── Local/DB Articles ─────────────────────────────── -->
+{% if articles %}
+<div class="news-local-section">
+  <div class="news-section-header">
+    <div class="news-section-icon" style="background: linear-gradient(135deg, #e879f9, #a855f7); padding: 5px;"><img src="{% static 'img/edit-tools.png' %}" alt="Editorial" style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);"></div>
+    <div>
+      <h2 class="news-section-title">LAPADOS Editorial</h2>
+      <p class="news-section-subtitle">Curated articles by our team</p>
+    </div>
+  </div>
+
+  <div class="blog-grid">
+    {% for article in articles %}
+    <a href="{% url 'news:detail' article.pk %}" class="blog-card news-editorial-card" style="text-decoration: none;">
+      <div class="blog-image-wrapper">
+        {% if article.image %}
+        <img src="{{ article.image.url }}" alt="{{ article.title }}" class="blog-image" loading="lazy">
+        {% else %}
+        <div class="blog-image-placeholder">📰</div>
+        {% endif %}
+        <div class="blog-badge-wrapper">
+          <span class="count-badge" style="background: var(--accent); color: #1a1a1a;">
+            {{ article.source_name|default:"Editorial" }}
+          </span>
+        </div>
+      </div>
+      <div class="blog-content">
+        <div class="blog-meta">{{ article.published_date|date:"F j, Y" }}</div>
+        <h3 class="blog-title">{{ article.title }}</h3>
+        <p class="blog-excerpt">
+          {{ article.content|striptags|truncatewords:20 }}
+        </p>
+        <div class="blog-footer">
+          <span class="btn-check" style="margin-left:auto;">Read More →</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if not articles and not api_configured %}
 <div class="empty-state animate-fade-in" style="margin-top: 2rem;">
   <div class="empty-state-icon">📰</div>
-  <p>No news updates found.</p>
+  <p>No news updates found. Configure SerpAPI to see live news.</p>
   {% if user.is_staff %}
   <a href="{% url 'admin:news_newsarticle_add' %}" class="btn-write" style="margin-top: 1rem; display: inline-flex;">+ Add News Article</a>
   {% endif %}
 </div>
 {% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+  // Client-side tab switching (avoids full page reload)
+  const tabs = document.querySelectorAll('.news-tab');
+  const contents = document.querySelectorAll('.news-tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetTab = tab.dataset.tab;
+
+      // Update tabs
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Update content
+      contents.forEach(c => c.classList.remove('active'));
+      const target = document.getElementById('tab-' + targetTab);
+      if (target) target.classList.add('active');
+
+      // Update URL without reload
+      const url = new URL(window.location);
+      url.searchParams.set('tab', targetTab);
+      history.replaceState(null, '', url);
+    });
+  });
+
+  // Stagger card animations
+  const cards = document.querySelectorAll('.news-card');
+  cards.forEach((card, i) => {
+    card.style.animationDelay = (i * 0.06) + 's';
+  });
+})();
+</script>
 {% endblock %}

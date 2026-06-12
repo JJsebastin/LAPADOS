@@ -93,6 +93,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 # API Keys
 GEMINI_API_KEY = env("GEMINI_API_KEY", default="")
 GROQ_API_KEY = env("GROQ_API_KEY")
+SERPAPI_KEY = env("SERPAPI_KEY", default="")
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
