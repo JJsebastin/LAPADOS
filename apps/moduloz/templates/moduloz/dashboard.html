@@ -86,12 +86,12 @@ html.dark #radarChart { filter: brightness(0.85); }
     </div>
 
     <!-- Right: 3D floating visual (generated illustration) -->
-    <div class="hero-visual" aria-hidden="true">
-      <div class="hero-3d-scene" id="hero3dScene">
+    <div class="hero-visual" aria-hidden="true" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="1000" style="transform-style: preserve-3d; z-index: 10;">
+      <div class="hero-3d-scene" id="hero3dScene" style="transform-style: preserve-3d; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
         <img
           src="{% static 'img/hero-3d.png' %}"
           alt="3D abstract anti-doping illustration"
-          style="width:100%;height:100%;object-fit:contain;border-radius:var(--radius-lg);filter:drop-shadow(0 16px 40px rgba(143,129,134,0.25));"
+          style="width:100%;height:100%;object-fit:contain;border-radius:var(--radius-lg);filter:drop-shadow(0 24px 48px rgba(0,0,0,0.3)); transform: translateZ(70px) scale(1.05); transition: transform 0.3s ease-out;"
         >
       </div>
     </div>
@@ -299,24 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Parallax on hero cards (mouse move) — lightweight, no Three.js
-  const scene = document.getElementById('hero3dScene');
-  const card1  = document.getElementById('heroCard1');
-  const card2  = document.getElementById('heroCard2');
-  const card3  = document.getElementById('heroCard3');
-  if (scene) {
-    document.addEventListener('mousemove', (e) => {
-      const cx = window.innerWidth  / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;   // -1 to 1
-      const dy = (e.clientY - cy) / cy;
-      const strength = 6;
-      scene.style.transform = `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg)`;
-    });
-    document.addEventListener('mouseleave', () => {
-      scene.style.transform = '';
-    });
-  }
+  // Vanilla Tilt handles the hero 3D parallax effect natively via data-tilt attributes.
 });
 </script>
 
