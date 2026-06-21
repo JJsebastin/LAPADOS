@@ -93,7 +93,7 @@ def moduloz_list(request):
 @login_required(login_url='/accounts/login/')
 def module_detail(request, slug):
     module = get_object_or_404(Module, slug=slug)
-    quizzes = module.quizzes.all()
+    quizzes = module.quizzes.all()[:7]
     return render(request, "moduloz/detail.html", {"module": module, "quizzes": quizzes})
 
 
@@ -318,7 +318,7 @@ def submit_quiz(request, slug):
     module = get_object_or_404(Module, slug=slug)
     data = json.loads(request.body)
     answers = data.get("answers", {})
-    quizzes = module.quizzes.all()
+    quizzes = module.quizzes.all()[:7]
     score = 0
     results = []
     for q in quizzes:

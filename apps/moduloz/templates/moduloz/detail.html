@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ module.title }} — LAPDOS{% endblock %}
+{% block title %}{{ module.title }} — LAPDOS Quiz{% endblock %}
 {% block nav_modules %}active{% endblock %}
 {% block content %}
 
@@ -18,27 +18,9 @@
     </div>
   </div>
 
-  <!-- Content Section (shown by default, hidden when quiz starts) -->
-  <div id="contentSection">
-    <div class="module-content-card">
-      {{ module.content|safe }}
-    </div>
-
-    {% if quizzes %}
-    <button id="startQuizBtn" class="btn-primary btn-start-quiz" onclick="startQuiz()">
-      🎯 Take the Quiz ({{ quizzes|length }} question{{ quizzes|length|pluralize }})
-    </button>
-    {% else %}
-    <div class="empty-state" style="margin-top:1.5rem;">
-      <div class="empty-state-icon">📝</div>
-      <p>No quiz available for this module yet.</p>
-      <a href="/">← Browse all modules</a>
-    </div>
-    {% endif %}
-  </div>
-
-  <!-- Quiz Section (hidden initially) -->
-  <div id="quizSection" style="display:none; transform: perspective(1000px) rotateX(5deg) translateY(20px); transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); opacity: 0; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 3rem 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(246,215,247,0.8), 0 10px 20px rgba(143,129,134,0.15);">
+  {% if quizzes %}
+  <!-- Quiz Section (shown initially) -->
+  <div id="quizSection" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px; padding: 3rem 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(246,215,247,0.8), 0 10px 20px rgba(143,129,134,0.15);">
     <h2 class="quiz-heading" style="font-size:2.5rem; font-weight: 900; color: #222; text-transform: uppercase; letter-spacing: -0.05em; margin-bottom: 2rem; text-align: center;">MODULE ASSESSMENT</h2>
     <form id="quizForm">
       {% csrf_token %}
@@ -68,6 +50,13 @@
       <button type="button" class="btn-primary btn-start-quiz" onclick="submitQuiz()">Submit Answers</button>
     </form>
   </div>
+  {% else %}
+  <div class="empty-state" style="margin-top:1.5rem;">
+    <div class="empty-state-icon">📝</div>
+    <p>No quiz available for this module yet.</p>
+    <a href="/">← Browse all modules</a>
+  </div>
+  {% endif %}
 
   <!-- Results Section (hidden initially) -->
   <div id="resultsSection" style="display:none;">
@@ -85,25 +74,12 @@
 <script>
 const SUBMIT_URL = "{% url 'submit_quiz' module.slug %}";
 
-function startQuiz() {
-  const content = document.getElementById('contentSection');
-  const quiz = document.getElementById('quizSection');
-  
-  content.style.opacity = '0';
-  content.style.transition = 'opacity 0.3s ease';
-  
-  setTimeout(() => {
-    content.style.display = 'none';
-    quiz.style.display = 'block';
-    // Trigger reflow
-    void quiz.offsetWidth;
-    quiz.style.opacity = '1';
-    quiz.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0)';
-  }, 300);
-}
-
 async function submitQuiz() {
   const form = document.getElementById('quizForm');
+  // Check validity
+  if (!form.reportValidity()) {
+      return;
+  }
   const radios = form.querySelectorAll('input[type=radio]:checked');
   const answers = {};
   radios.forEach(r => { answers[r.getAttribute('data-qid')] = r.value; });
@@ -133,7 +109,7 @@ async function submitQuiz() {
     div.innerHTML = `
       <span class="result-icon">${r.correct ? '✅' : '❌'}</span>
       <div>
-        <p class="result-text">Your answer: <strong>${r.your_answer}</strong> &nbsp;|&nbsp; Correct: <strong>${r.right_answer}</strong></p>
+        <p class="result-text">Your answer: <strong>${r.your_answer || 'None'}</strong> &nbsp;|&nbsp; Correct: <strong>${r.right_answer}</strong></p>
         ${r.explanation ? '<p class="result-explain">' + r.explanation + '</p>' : ''}
       </div>`;
     list.appendChild(div);
